@@ -4,4 +4,4 @@ sec/
 venv/
 
 # Files
-
+*.env
