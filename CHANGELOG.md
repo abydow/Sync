@@ -1,4 +1,4 @@
-## 20th dec --
+## 20th dec
 
 - added CONTRIBUTION.md
 - License
