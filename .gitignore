@@ -5,3 +5,4 @@ venv/
 
 # Files
 *.env
+*src/bot/user_warnings.db
