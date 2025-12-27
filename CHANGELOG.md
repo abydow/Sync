@@ -23,4 +23,4 @@
 ## 26th DEC
 
 - planning things out, check the architecture folder for detailed info
-- added plans about event driven architecture, database and caching strategy
+- added plans about event driven architecture, database and caching strategy(not final)
