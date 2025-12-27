@@ -19,3 +19,8 @@
 - Updated the code and removed the "Interesting" reply feature
 - Also included the profanity check loop inside the same bot.event decorator
 - Tested the bot on 2 test servers
+
+## 26th DEC
+
+- planning things out, check the architecture folder for detailed info
+- added plans about event driven architecture, database and caching strategy
