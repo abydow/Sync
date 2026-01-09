@@ -1,58 +1,76 @@
-# Contributing to Sync
+# Contributing to Enterprise Discord Bot
 
-- Thanks for your interest in contributing to Sync! We're just getting started, and we need help from developers like you to build something great.
+First off, thank you for considering contributing! It's people like you that make the open-source community such a fantastic place. Every contribution, no matter how small, is greatly appreciated.
 
-## We're In Early Stage
+This document provides a set of guidelines for contributing to this project. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
-- Sync is in its early development phase. This is a fantastic time to contribute because:
+## Code of Conduct
 
-  ✅ Your ideas and feedback directly shape the project
+This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior.
 
-  ✅ You can influence architecture decisions
+*(You will need to create a `CODE_OF_CONDUCT.md` file. A good template can be found at the [Contributor Covenant website](https://www.contributor-covenant.org/version/2/1/code_of_conduct/))*
 
-  ✅ Building from the ground up teaches you more
+---
 
-  ✅ Core contributors get recognized early
+## How Can I Contribute?
 
-## How You Can Help :
+There are many ways to contribute, from writing code and documentation to submitting bug reports and feature requests.
 
-1. Suggest Features
-   > Have an idea? Open an issue with tag [FEATURE]:
+### 🐛 Reporting Bugs
 
-- "AI moderation that learns per-server"
+If you find a bug, please ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/your-username/Discord_Bot/issues).
 
-- "Custom command builder"
+If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/your-username/Discord_Bot/issues/new). Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
 
-- "Integration with X service"
+### ✨ Suggesting Enhancements
 
-2. Report Bugs
-   > Found something broken? Open an issue with tag [BUG]:
+If you have an idea for a new feature or an improvement to an existing one, please open an issue to discuss it. This allows us to coordinate our efforts and prevent duplication of work.
 
-- Include reproduction steps
+Check the project's [Roadmap](README.md#️-project-roadmap) to see if your idea is already planned.
 
-- Discord.py version and OS
+---
 
-- Error logs if applicable
+## 🚀 Pull Request Process
 
-3. Improve Documentation
-   > Fix typos or unclear sections in README
+Ready to contribute code? Here's how to set up your fork and submit a pull request.
 
-- Add examples to docstrings
+1.  **Fork the repository** and clone it locally.
+    ```sh
+    git clone https://github.com/your-username/your-fork-name.git
+    ```
 
-- Create tutorials or guides
+2.  **Create a new branch** for your changes.
+    ```sh
+    git checkout -b name-of-your-feature-or-fix
+    ```
 
-4. Write Code
-   > Pick an issue labeled good first issue
+3.  **Make your changes!** Ensure your code adheres to the project's style and conventions.
 
-- Implement a feature from the roadmap
+4.  **Add tests** for your changes. This is crucial for maintaining the quality of the project.
 
-- Optimize existing code
+5.  **Commit your changes** with a clear and descriptive commit message.
+    ```sh
+    git commit -m "feat: Add amazing new feature" -m "Detailed description of the changes."
+    ```
+    We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
 
-- Add tests
+6.  **Push your branch** to your fork on GitHub.
+    ```sh
+    git push origin name-of-your-feature-or-fix
+    ```
 
-5. Test & Review
-   > Test pull requests on your own server
+7.  **Open a pull request** to the `main` branch of the original repository.
 
-- Give constructive feedback
+### Pull Request Checklist
 
-- Help catch edge cases
+Before you submit your PR, please make sure you have done the following:
+
+- [ ] Read the [CONTRIBUTING.md](./CONTRIBUTING.md) guide.
+- [ ] If you've added code that should be tested, add tests.
+- [ ] Ensure the test suite passes (`pytest`).
+- [ ] Make sure your code lints (`ruff check .`).
+- [ ] Update the documentation if your changes require it.
+
+---
+
+Thank you for your contribution!

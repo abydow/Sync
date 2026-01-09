@@ -1,26 +1,38 @@
-## 20th dec
+# Changelog
 
-- added CONTRIBUTION.md
-- License
-- README.md
-- .gitignore
+All notable changes to this project will be documented in this file.
 
-## 21st Dec
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-- Added the sqlite package
-- created a database table to store the data of user and guild and a integer slot for storing warnings issued.
-- created create_user_table() to make the database with primary key of (user_id,guild_id)
-- created increase_and_get warnings() function to count warning
-  - If the user has no history it will add the user and also update the database with 1 warning
-  - If the user is already in the database it will add +1 warning
+---
 
-## 22nd Dec
+## [Unreleased]
 
-- Updated the code and removed the "Interesting" reply feature
-- Also included the profanity check loop inside the same bot.event decorator
-- Tested the bot on 2 test servers
+### Added
+- Plans for advanced moderation features (warn, mute, kick, ban).
+- Plans for AI-powered features (chatbot, content moderation).
+- Plans for a comprehensive command suite.
+- Plans for database integration for data persistence.
+- Plans for a web dashboard and API.
 
-## 26th DEC
+### Changed
+- N/A
 
-- planning things out, check the architecture folder for detailed info
-- added plans about event driven architecture, database and caching strategy(not final)
+### Fixed
+- N/A
+
+### Removed
+- N/A
+
+---
+
+## [0.0.1] - 2026-01-09
+
+### Added
+- **Initial Project Setup:**
+  - Created the core bot structure using `discord.py`.
+  - Implemented basic event handling for `on_ready` and `on_guild_join`.
+  - Set up environment variable loading using `python-dotenv` for secure token management.
+  - Configured basic logging to the console for monitoring bot status.
+  - Added project documentation files: `README.md`, `CONTRIBUTING.md`, and `CHANGELOG.md`.
+  - Created an initial `.gitignore` file for Python projects.
