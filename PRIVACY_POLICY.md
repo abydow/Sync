@@ -73,5 +73,5 @@ To exercise these rights, please contact us using the methods below.
 
 If you have any questions about this Privacy Policy, please contact us via:
 
-- **Discord:** [https://discord.gg/KF5ZqzB2]
+- **Discord:** [https://discord.gg/SGH3PgpNBp]
 - **GitHub Issues:** [https://github.com/abydow/Sync/issues]
