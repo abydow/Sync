@@ -6,28 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [Unreleased]
-
-### Added
-
-- Plans for advanced moderation features (warn, mute, kick, ban).
-- Plans for AI-powered features (chatbot, content moderation).
-- Plans for a comprehensive command suite.
-- Plans for database integration for data persistence.
-- Plans for a web dashboard and API.
-
-### Changed
-
-- N/A
-
-### Fixed
-
-- N/A
-
-### Removed
-
-- N/A
-
 ## [0.0.2] - 2026-01-10
 
 ### Added
