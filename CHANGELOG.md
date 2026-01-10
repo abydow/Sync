@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Added
+
 - Plans for advanced moderation features (warn, mute, kick, ban).
 - Plans for AI-powered features (chatbot, content moderation).
 - Plans for a comprehensive command suite.
@@ -16,19 +17,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Plans for a web dashboard and API.
 
 ### Changed
+
 - N/A
 
 ### Fixed
+
 - N/A
 
 ### Removed
+
 - N/A
 
----
+## [0.0.2] - 2026-01-10
+
+### Added
+
+- **Basic Commands:**
+  - `ping`: Check bot latency.
+  - `info`: Display general bot statistics.
+  - `userinfo`: Show details about a user.
+  - `serverinfo`: Show details about the current server.
+- **Legal & Documentation:**
+  - Added `PRIVACY_POLICY.md`.
+  - Added `TERMS_OF_SERVICE.md`.
+- **Development:**
+  - Added `requirements-dev.txt`.
 
 ## [0.0.1] - 2026-01-09
 
 ### Added
+
 - **Initial Project Setup:**
   - Created the core bot structure using `discord.py`.
   - Implemented basic event handling for `on_ready` and `on_guild_join`.
