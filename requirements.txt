@@ -1,3 +1,6 @@
 discord.py==2.6.4
 python-dotenv==1.0.0
 PyNacl==1.5.0
+sqlalchemy==2.0.45
+asyncpg==0.31.0
+alembic==1.17.2

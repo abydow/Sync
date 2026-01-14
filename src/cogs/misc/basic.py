@@ -56,7 +56,7 @@ class BasicCommands(commands.Cog):
 • Avatar: [Link]({member.display_avatar.url})
 """
         if ctx.guild and isinstance(member, discord.Member):
-            info_text += f"\n** 🫱🏼‍🫲🏾 Guild Member info**\n"
+            info_text += "\n** 🫱🏼‍🫲🏾 Guild Member info**\n"
             info_text += f"• Joined : {member.joined_at.strftime('%Y-%m-%d %H:%M')}\n"
             info_text += f"• Nickname: {member.nick or 'None'}\n"
             info_text += f"• Top Role: {member.top_role.mention}\n"
