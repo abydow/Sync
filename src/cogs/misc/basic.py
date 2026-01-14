@@ -13,7 +13,6 @@ class BasicCommands(commands.Cog):
         aliases=["latency", "pong"],
         help="Check the bot's latency.",
     )
-
     async def ping(self, ctx: commands.Context):
         # Bot latency
         latency_ms = round(self.bot.latency * 1000)
@@ -23,7 +22,6 @@ class BasicCommands(commands.Cog):
         name="info",
         help="Get information about the bot.",
     )
-
     async def info(self, ctx: commands.Context):
         # Bot info
         info_text = f"""
@@ -41,8 +39,7 @@ class BasicCommands(commands.Cog):
         aliases=["user", "memberinfo"],
         help="Get information about a user.",
     )
-
-    async def user_info(self,ctx: commands.Context,member: discord.Member = None):
+    async def user_info(self, ctx: commands.Context, member: discord.Member = None):
         # show user info
         member = member or ctx.author
 
@@ -56,29 +53,32 @@ class BasicCommands(commands.Cog):
 • Avatar: [Link]({member.display_avatar.url})
 """
         if ctx.guild and isinstance(member, discord.Member):
-            info_text += f"\n** 🫱🏼‍🫲🏾 Guild Member info**\n"
+            info_text += "\n** 🫱🏼‍🫲🏾 Guild Member info**\n"
             info_text += f"• Joined : {member.joined_at.strftime('%Y-%m-%d %H:%M')}\n"
             info_text += f"• Nickname: {member.nick or 'None'}\n"
             info_text += f"• Top Role: {member.top_role.mention}\n"
-            info_text += f"• Roles ({len(member.roles)-1}): {', '.join(r.mention for r in member.roles[1:][:10]) or 'None'}"
+            info_text += f"• Roles ({len(member.roles) - 1}): {', '.join(r.mention for r in member.roles[1:][:10]) or 'None'}"
 
             if len(member.roles) > 11:
-                info_text += f" ... and {len(member.roles)-11} more"
+                info_text += f" ... and {len(member.roles) - 11} more"
 
         await ctx.send(info_text)
 
     @commands.command(
         name="serverinfo",
-        aliases=["guildinfo","server","guild"],
+        aliases=["guildinfo", "server", "guild"],
         help="Get information about the server.",
-        )
-
+    )
     async def server_info(self, ctx: commands.Context):
         # Show server information
         guild = ctx.guild
 
-        text_channels = len([c for c in guild.channels if isinstance(c, discord.TextChannel)])
-        voice_channels = len([c for c in guild.channels if isinstance(c, discord.VoiceChannel)])
+        text_channels = len(
+            [c for c in guild.channels if isinstance(c, discord.TextChannel)]
+        )
+        voice_channels = len(
+            [c for c in guild.channels if isinstance(c, discord.VoiceChannel)]
+        )
         roles = len(guild.roles)
         info_text = f"""
 **🏰 Server Information**
@@ -94,7 +94,9 @@ class BasicCommands(commands.Cog):
 """
         await ctx.send(info_text)
 
+
 # Setup
+
 
 async def setup(bot):
     await bot.add_cog(BasicCommands(bot))
