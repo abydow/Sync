@@ -1,0 +1,49 @@
+from sqlalchemy import BigInteger, Boolean, CheckConstraint, Column, DateTime, String
+from sqlalchemy.sql import func
+
+from database import Base
+
+
+class Guild(Base):
+    """Guild Config."""
+
+    __tablename__ = "guilds"
+
+    id = Column(BigInteger, primary_key=True)
+    guild_id = Column(BigInteger, unique=True, nullable=False, index=True)
+    prefix = Column(String(5), default="!")
+    welcome_enabled = Column(Boolean, default=False)
+    welcome_message = Column(String(500), default="Welcome {member}!")
+    welcome_channel_id = Column(BigInteger, nullable=True)
+    modlog_channel_id = Column(BigInteger, nullable=True)
+    auto_role_id = Column(BigInteger, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "length(prefix) > 0 AND length(prefix) <= 5", name="valid_prefix"
+        ),
+    )
+
+    def __repr__(self):
+        return f"<Guild {self.guild_id}>"
+
+
+class User(Base):
+    """User Profile"""
+
+    __tablename__ = "users"
+    id = Column(BigInteger, primary_key=True)
+    user_id = Column(BigInteger, unique=True, nullable=False, index=True)
+    username = Column(String(255), nullable=False)
+    avatar_url = Column(String(500), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    def __repr__(self):
+        return f"<User {self.user_id}>"
