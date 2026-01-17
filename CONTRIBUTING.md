@@ -8,8 +8,6 @@ This document provides a set of guidelines for contributing to this project. The
 
 This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior.
 
-*(You will need to create a `CODE_OF_CONDUCT.md` file. A good template can be found at the [Contributor Covenant website](https://www.contributor-covenant.org/version/2/1/code_of_conduct/))*
-
 ---
 
 ## How Can I Contribute?
