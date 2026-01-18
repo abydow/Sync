@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.0.3] - 2026-01-18
+
+### Added
+
+- **Database:**
+  - Implemented SQLAlchemy-based database integration.
+  - Added `Guild` and `User` models for persistent storage.
+  - Created `DatabaseService` for managing guild configurations and user data.
+- **Architecture:**
+  - Restructured project layout for better scalability.
+
+### Changed
+
+- Refactored `main.py` and cogs for better code quality and linting.
+- Improved error handling and minor bug fixes.
+
 ## [0.0.2] - 2026-01-10
 
 ### Added
