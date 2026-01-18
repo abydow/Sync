@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from database import init_db
+
 # configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -52,6 +54,12 @@ async def on_guild_join(guild):
 
 @bot.event
 async def setup_hook():
+    """Initialize database and load cogs"""
+    # database
+
+    await init_db()
+    logger.info("✔ Database Initialized")
+
     # load cogs
     cog_files = []
 
