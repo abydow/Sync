@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from database import init_db
+from database import AsyncSessionLocal, init_db
 
 # configure logging
 logging.basicConfig(
@@ -23,11 +23,19 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(
-    command_prefix="!",
-    intents=intents,
-    help_command=None,  # disable default help command
-)
+
+# Bot class
+class DiscordBot(commands.Bot):
+    def __init__(self):
+        super().__init__(
+            command_prefix="!",
+            intents=intents,
+            help_command=None,  # disable default help command
+        )
+        self.db_session = AsyncSessionLocal()  # Bot instancence
+
+
+bot = DiscordBot()
 
 
 @bot.event
