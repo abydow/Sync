@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.0.4] - 2026-01-20
+
+### Added
+
+- **Database:**
+  - Integrated **Supabase** and **Alembic** for database migrations (`alembic.ini`, `migrations/`).
+  - Added test suite for database connections (`test/test_db.py`).
+- **Events (New Module):**
+  - Added `src/cogs/events/listeners.py` to handle core events.
+  - `on_message`: Automatically registers guilds in the database.
+  - `on_member_join`: Implemented welcome messages and auto-role assignment.
+  - `on_guild_join`: Initializes guild configuration and DMs the server owner.
+  - `on_guild_remove` & `on_member_remove`: Added usage logging.
+
+### Changed
+
+- **Refactor:**
+  - Moved event handling logic to `src/cogs/events/listeners.py`.
+
 ## [0.0.3] - 2026-01-18
 
 ### Added
