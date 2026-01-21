@@ -22,6 +22,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 
 # Bot class
@@ -32,7 +33,7 @@ class DiscordBot(commands.Bot):
             intents=intents,
             help_command=None,  # disable default help command
         )
-        self.db_session = AsyncSessionLocal()  # Bot instancence
+        self.db_session = AsyncSessionLocal  # Bot instancence
 
 
 bot = DiscordBot()
@@ -51,13 +52,6 @@ async def on_ready():
         ),
         status=discord.Status.online,
     )
-
-
-@bot.event
-async def on_guild_join(guild):
-    # when bot joins a new server
-    logger.info(f"✨Joined new guild: {guild.name} (id: {guild.id})")
-    logger.info(f"📊 Now serving {len(bot.guilds)} guilds in total")
 
 
 @bot.event

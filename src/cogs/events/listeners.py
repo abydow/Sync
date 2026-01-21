@@ -34,8 +34,10 @@ class EventListeners(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         """Handle Member Joining Server"""
-
-        logger.info(f"👋 {member} joined {member.guild}")
+        if member.bot:
+            return
+        else:
+            logger.info(f"👋 {member} joined {member.guild}")
 
         # Get Guild Config
         async with self.bot.db_session() as session:
@@ -87,15 +89,18 @@ class EventListeners(commands.Cog):
         # Send Welcome DM to owner
         try:
             owner = guild.owner
-            embed = discord.Embed(
-                title="Thanks for adding me!",
-                description=f"I'm now in **{guild.name}**",
-                color=discord.Color.green(),
-            )
-            embed.add_field(
-                name="Get Started", value="Use `!help` to see all commands "
-            )
-            await owner.send(embed=embed)
+            if owner:
+                embed = discord.Embed(
+                    title="Thanks for adding me!",
+                    description=f"I'm now in **{guild.name}**",
+                    color=discord.Color.green(),
+                )
+                embed.add_field(
+                    name="Get Started", value="Use `!help` to see all commands "
+                )
+                await owner.send(embed=embed)
+            else:
+                logger.warning(f"No owner found for {guild}")
         except discord.Forbidden:
             logger.warning(f"Cannot DM owner of {guild}")
 

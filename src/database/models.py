@@ -9,7 +9,7 @@ class Guild(Base):
 
     __tablename__ = "guilds"
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     guild_id = Column(BigInteger, unique=True, nullable=False, index=True)
     prefix = Column(String(5), default="!")
     welcome_enabled = Column(Boolean, default=False)
@@ -36,7 +36,7 @@ class User(Base):
     """User Profile"""
 
     __tablename__ = "users"
-    id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(BigInteger, unique=True, nullable=False, index=True)
     username = Column(String(255), nullable=False)
     avatar_url = Column(String(500), nullable=True)
