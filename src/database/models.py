@@ -1,12 +1,4 @@
-from sqlalchemy import (
-    BigInteger,
-    Boolean,
-    CheckConstraint,
-    Column,
-    DateTime,
-    Integer,
-    String,
-)
+from sqlalchemy import BigInteger, Boolean, CheckConstraint, Column, DateTime, String
 from sqlalchemy.sql import func
 
 from database import Base
@@ -17,7 +9,7 @@ class Guild(Base):
 
     __tablename__ = "guilds"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     guild_id = Column(BigInteger, unique=True, nullable=False, index=True)
     prefix = Column(String(5), default="!")
     welcome_enabled = Column(Boolean, default=False)
@@ -44,7 +36,7 @@ class User(Base):
     """User Profile"""
 
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(BigInteger, unique=True, nullable=False, index=True)
     username = Column(String(255), nullable=False)
     avatar_url = Column(String(500), nullable=True)

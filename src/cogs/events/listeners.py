@@ -24,12 +24,9 @@ class EventListeners(commands.Cog):
 
         # Ensure Guild Exists in Database
         if message.guild:
-            try:
-                async with self.bot.db_session() as session:
-                    db = DatabaseService(session)
-                    await db.get_or_create_guild(message.guild.id)
-            except Exception:
-                logger.exception("Failed to ensure guild exists in database")
+            async with self.bot.db_session() as session:
+                db = DatabaseService(session)
+                await db.get_or_create_guild(message.guild.id)
 
         # Process Commands (required  for command framework to work)
         await self.bot.process_commands(message)
@@ -37,26 +34,15 @@ class EventListeners(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         """Handle Member Joining Server"""
-
-        logger.info(f"👋 {member} joined {member.guild}")
+        if member.bot:
+            return
+        else:
+            logger.info(f"👋 {member} joined {member.guild}")
 
         # Get Guild Config
-        try:
-            async with self.bot.db_session() as session:
-                db = DatabaseService(session)
-                config = await db.get_guild_config(member.guild.id)
-        except Exception:
-            logger.exception(
-                "Failed to load guild config from database; using defaults"
-            )
-            config = {
-                "prefix": "!",
-                "welcome_enabled": False,
-                "welcome_message": "Welcome {member}!",
-                "welcome_channel_id": None,
-                "modlog_channel_id": None,
-                "auto_role_id": None,
-            }
+        async with self.bot.db_session() as session:
+            db = DatabaseService(session)
+            config = await db.get_guild_config(member.guild.id)
 
         # Send Welcome Message <if enabled>
         if config["welcome_enabled"] and config["welcome_channel_id"]:
@@ -96,25 +82,25 @@ class EventListeners(commands.Cog):
         logger.info(f"📈 Now serving {len(self.bot.guilds)} guilds")
 
         # Create Guild Config
-        try:
-            async with self.bot.db_session() as session:
-                db = DatabaseService(session)
-                await db.get_or_create_guild(guild.id)
-        except Exception:
-            logger.exception("Failed to create guild config in database")
+        async with self.bot.db_session() as session:
+            db = DatabaseService(session)
+            await db.get_or_create_guild(guild.id)
 
         # Send Welcome DM to owner
         try:
             owner = guild.owner
-            embed = discord.Embed(
-                title="Thanks for adding me!",
-                description=f"I'm now in **{guild.name}**",
-                color=discord.Color.green(),
-            )
-            embed.add_field(
-                name="Get Started", value="Use `!help` to see all commands "
-            )
-            await owner.send(embed=embed)
+            if owner:
+                embed = discord.Embed(
+                    title="Thanks for adding me!",
+                    description=f"I'm now in **{guild.name}**",
+                    color=discord.Color.green(),
+                )
+                embed.add_field(
+                    name="Get Started", value="Use `!help` to see all commands "
+                )
+                await owner.send(embed=embed)
+            else:
+                logger.warning(f"No owner found for {guild}")
         except discord.Forbidden:
             logger.warning(f"Cannot DM owner of {guild}")
 
