@@ -32,7 +32,7 @@ class DiscordBot(commands.Bot):
             intents=intents,
             help_command=None,  # disable default help command
         )
-        self.db_session = AsyncSessionLocal()  # Bot instancence
+        self.db_session = AsyncSessionLocal  # Bot instance
 
 
 bot = DiscordBot()

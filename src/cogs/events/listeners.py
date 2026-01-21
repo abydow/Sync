@@ -24,9 +24,12 @@ class EventListeners(commands.Cog):
 
         # Ensure Guild Exists in Database
         if message.guild:
-            async with self.bot.db_session() as session:
-                db = DatabaseService(session)
-                await db.get_or_create_guild(message.guild.id)
+            try:
+                async with self.bot.db_session() as session:
+                    db = DatabaseService(session)
+                    await db.get_or_create_guild(message.guild.id)
+            except Exception:
+                logger.exception("Failed to ensure guild exists in database")
 
         # Process Commands (required  for command framework to work)
         await self.bot.process_commands(message)
@@ -38,9 +41,22 @@ class EventListeners(commands.Cog):
         logger.info(f"👋 {member} joined {member.guild}")
 
         # Get Guild Config
-        async with self.bot.db_session() as session:
-            db = DatabaseService(session)
-            config = await db.get_guild_config(member.guild.id)
+        try:
+            async with self.bot.db_session() as session:
+                db = DatabaseService(session)
+                config = await db.get_guild_config(member.guild.id)
+        except Exception:
+            logger.exception(
+                "Failed to load guild config from database; using defaults"
+            )
+            config = {
+                "prefix": "!",
+                "welcome_enabled": False,
+                "welcome_message": "Welcome {member}!",
+                "welcome_channel_id": None,
+                "modlog_channel_id": None,
+                "auto_role_id": None,
+            }
 
         # Send Welcome Message <if enabled>
         if config["welcome_enabled"] and config["welcome_channel_id"]:
@@ -80,9 +96,12 @@ class EventListeners(commands.Cog):
         logger.info(f"📈 Now serving {len(self.bot.guilds)} guilds")
 
         # Create Guild Config
-        async with self.bot.db_session() as session:
-            db = DatabaseService(session)
-            await db.get_or_create_guild(guild.id)
+        try:
+            async with self.bot.db_session() as session:
+                db = DatabaseService(session)
+                await db.get_or_create_guild(guild.id)
+        except Exception:
+            logger.exception("Failed to create guild config in database")
 
         # Send Welcome DM to owner
         try:
