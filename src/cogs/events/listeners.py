@@ -93,7 +93,7 @@ class EventListeners(commands.Cog):
                 embed = discord.Embed(
                     title="Thanks for adding me!",
                     description=f"I'm now in **{guild.name}**",
-                    color=discord.Color.green(),
+                    color=discord.Color.from_rgb(80, 60, 127),
                 )
                 embed.add_field(
                     name="Get Started", value="Use `!help` to see all commands "
