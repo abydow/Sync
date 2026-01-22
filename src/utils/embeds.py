@@ -18,7 +18,7 @@ class EmbedBuilder:
 
     @staticmethod
     def error(title: str, description: str = "", **kwargs) -> discord.Embed:
-        """Create error embed"""
+        """Create Error Embed"""
         embed = discord.Embed(
             title=f"✕ {title}",
             description=description,
@@ -29,11 +29,11 @@ class EmbedBuilder:
 
     @staticmethod
     def info(title: str, description: str = "", **kwargs) -> discord.Embed:
-        """Create info embed"""
+        """Create Info Embed"""
         embed = discord.Embed(
             title=f"ℹ️ {title}",
             description=description,
-            color=discord.Color.bule(),
+            color=discord.Color.blue(),
             **kwargs,
         )
 
@@ -41,7 +41,7 @@ class EmbedBuilder:
 
     @staticmethod
     def warning(title: str, description: str = "", **kwargs) -> discord.Embed:
-        """Create warning embed"""
+        """Create Warning Embed"""
         embed = discord.Embed(
             title=f"⚠️ {title}",
             description=description,
