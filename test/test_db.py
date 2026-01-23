@@ -1,6 +1,7 @@
 import asyncio
 import os
 
+import pytest
 from dotenv import load_dotenv
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -10,10 +11,10 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
+@pytest.mark.asyncio
 async def test_connection():
     if not DATABASE_URL:
-        print("❌ DATABASE_URL not found in .env file!")
-        return
+        pytest.skip("DATABASE_URL not found in .env file!")
 
     try:
         print("🔗 Attempting to connect to database...")
@@ -23,7 +24,7 @@ async def test_connection():
             print("✅ Connection successful!")
         await engine.dispose()
     except Exception as e:
-        print(f"❌ Connection failed: {e}")
+        pytest.fail(f"Connection failed: {e}")
 
 
 if __name__ == "__main__":

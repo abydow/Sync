@@ -57,10 +57,14 @@ class BasicCommands(commands.Cog):
             info_text += f"• Joined : {member.joined_at.strftime('%Y-%m-%d %H:%M')}\n"
             info_text += f"• Nickname: {member.nick or 'None'}\n"
             info_text += f"• Top Role: {member.top_role.mention}\n"
-            info_text += f"• Roles ({len(member.roles) - 1}): {', '.join(r.mention for r in member.roles[1:][:10]) or 'None'}"
 
-            if len(member.roles) > 11:
-                info_text += f" ... and {len(member.roles) - 11} more"
+            # Show roles (highest to lowest, excluding @everyone)
+            roles = member.roles[1:][::-1]
+            role_mentions = [r.mention for r in roles[:10]]
+            info_text += f"• Roles ({len(roles)}): {', '.join(role_mentions) or 'None'}"
+
+            if len(roles) > 10:
+                info_text += f" ... and {len(roles) - 10} more"
 
         await ctx.send(info_text)
 

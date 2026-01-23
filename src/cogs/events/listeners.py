@@ -27,7 +27,6 @@ class EventListeners(commands.Cog):
             async with self.bot.db_session() as session:
                 db = DatabaseService(session)
                 await db.get_or_create_guild(message.guild.id)
-
         # Process Commands (required  for command framework to work)
         await self.bot.process_commands(message)
 
@@ -49,10 +48,12 @@ class EventListeners(commands.Cog):
             channel = member.guild.get_channel(config["welcome_channel_id"])
 
             if channel:
-                welcome_message = config["welcome_message"].format(
-                    member=member.mention,
-                    server=member.guild.name,
-                    count=member.guild.member_count,
+                # Safe formatting using replace to avoid KeyErrors with user-provided strings
+                raw_message = config["welcome_message"] or "Welcome {member}!"
+                welcome_message = (
+                    raw_message.replace("{member}", member.mention)
+                    .replace("{server}", member.guild.name)
+                    .replace("{count}", str(member.guild.member_count))
                 )
 
                 try:
