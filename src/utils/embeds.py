@@ -10,7 +10,7 @@ class EmbedBuilder:
         embed = discord.Embed(
             title=f"✔ {title}",
             description=description,
-            color=discord.Color.green(),
+            color=discord.Color.from_rgb(205, 67, 158),
             **kwargs,
         )
 
@@ -22,7 +22,7 @@ class EmbedBuilder:
         embed = discord.Embed(
             title=f"✕ {title}",
             description=description,
-            color=discord.Color.red(),
+            color=discord.Color.from_rgb(162, 50, 111),
             **kwargs,
         )
         return embed
@@ -33,7 +33,7 @@ class EmbedBuilder:
         embed = discord.Embed(
             title=f"ℹ️ {title}",
             description=description,
-            color=discord.Color.blue(),
+            color=discord.Color.from_rgb(252, 214, 91),
             **kwargs,
         )
 
@@ -45,7 +45,7 @@ class EmbedBuilder:
         embed = discord.Embed(
             title=f"⚠️ {title}",
             description=description,
-            color=discord.Color.gold(),
+            color=discord.Color.from_rgb(23, 22, 44),
             **kwargs,
         )
 
