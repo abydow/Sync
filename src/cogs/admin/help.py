@@ -46,3 +46,14 @@ class HelpCog(commands.Cog):
                 )
 
             # To Show Usage
+            usage = f"{ctx.clean_prefix}{command.qualified_name}"
+            if command.signature:
+                usage += f" {command.signature}"
+
+            embed.add_field(name="Usage", value=f"```{usage}```", inline=False)
+
+            await ctx.send(embed=embed)
+
+        else:
+            """Show All Commands Grouped by Cog"""
+            embed = discord.Embed()
