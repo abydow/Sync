@@ -63,3 +63,33 @@ class HelpCog(commands.Cog):
             )
 
             cogs = {}
+
+            for command in self.bot.commands:
+                # Skip Hidden Commands
+                if command.hidden:
+                    continue
+
+                # Get Cog Name
+                cog_name = command.cog.qualified_name if command.cog else "Other"
+
+                if cog_name not in cogs:
+                    cogs[cog_name] = []
+
+                cogs[cog_name].append(command)
+
+            # Add Fields For Each Cog
+            for cog_name, commands in sorted(cogs.items()):
+                command_list = ", ".join(f"`{cmd.name}`" for cmd in commands)
+                embed.add_field(
+                    name=f"**{cog_name}**",
+                    value=command_list,
+                    inline=False,
+                )
+
+            embed.set_footer(text=f"Total commands: {len(self.bot.commands)}")
+
+            await ctx.send(embed=embed)
+
+
+async def setup(bot):
+    await bot.add_cog(HelpCog(bot))
