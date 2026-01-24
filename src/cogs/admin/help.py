@@ -56,4 +56,10 @@ class HelpCog(commands.Cog):
 
         else:
             """Show All Commands Grouped by Cog"""
-            embed = discord.Embed()
+            embed = discord.Embed(
+                title="📚 Help",
+                description=f"Use `{ctx.clean_prefix}help [command]` for more info",
+                color=discord.Color.blue(),
+            )
+
+            cogs = {}
