@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from utils.embed import EmbedBuilder
 
 
 class BasicCommands(commands.Cog):
@@ -8,31 +9,30 @@ class BasicCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        name="ping",
-        aliases=["latency", "pong"],
-        help="Check the bot's latency.",
-    )
+    @commands.command(name="ping")
     async def ping(self, ctx: commands.Context):
         # Bot latency
         latency_ms = round(self.bot.latency * 1000)
-        await ctx.send(f" 🏓 Pong! Latency: **{latency_ms}ms**")
+        embed = EmbedBuilder.info("Latency", f"🏓 Pong!**{latency_ms}ms**")
+        await ctx.send(embed=embed)
 
-    @commands.command(
-        name="info",
-        help="Get information about the bot.",
-    )
+    @commands.command(name="info")
     async def info(self, ctx: commands.Context):
         # Bot info
-        info_text = f"""
-**🤖 Bot Information**
-• Name: {self.bot.user.name}
-• ID: {self.bot.user.id}
-• Guilds: {len(self.bot.guilds)}
-• Users: {sum(g.member_count for g in self.bot.guilds)}
-• Latency: {round(self.bot.latency * 1000)}ms
-"""
-        await ctx.send(info_text)
+        embed = discord.Embed(title="🤖 Bot Information", color=discord.Color.blue())
+        embed.add_field(name="Name", value=self.bot.user.name, inline=False)
+        embed.add_field(name="ID", value=self.bot.user.id, inline=False)
+        embed.add_field(name="Guilds", value=len(self.bot.guilds), inline=False)
+        embed.add_field(
+            name="Users",
+            value=sum(g.member_count for g in self.bot.guilds),
+            inline=False,
+        )
+        embed.add_field(
+            name="Latency", value=f"{round(self.bot.latency * 1000)}ms", inline=False
+        )
+
+        await ctx.send(embed=embed)
 
     @commands.command(
         name="userinfo",
