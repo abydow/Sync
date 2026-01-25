@@ -28,7 +28,7 @@ class EventListeners(commands.Cog):
                 db = DatabaseService(session)
                 await db.get_or_create_guild(message.guild.id)
         # Process Commands (required  for command framework to work)
-        await self.bot.process_commands(message)
+        # await self.bot.process_commands(message)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):

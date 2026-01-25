@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from utils.embed import EmbedBuilder
+
+from utils.embeds import EmbedBuilder
 
 
 class BasicCommands(commands.Cog):
@@ -51,11 +52,11 @@ class BasicCommands(commands.Cog):
             inline=False,
         )
         embed1.add_field(name="Bot", value="Yes" if member.bot else "No", inline=False)
-        embed1.add_field(name="Avatar", value=member.display_avatar.url, inline=False)
+        embed1.set_image(url=member.display_avatar.url)
 
         if ctx.guild and isinstance(member, discord.Member):
             embed2 = discord.Embed(
-                title="🫱🏼‍🫲🏾 Guild Member info", color=discord.Color.aqua()
+                title="🫱🏼‍🫲🏾 Guild Member info", color=discord.Color.magenta()
             )
             embed2.add_field(
                 name="Joined",
