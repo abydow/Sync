@@ -92,19 +92,32 @@ class BasicCommands(commands.Cog):
             [c for c in guild.channels if isinstance(c, discord.VoiceChannel)]
         )
         roles = len(guild.roles)
-        info_text = f"""
-**🏰 Server Information**
-
-• Name: {guild.name}
-• ID: {guild.id}
-• Owner: {guild.owner.mention if guild.owner else "Unknown"}
-• Created : {guild.created_at.strftime("%Y-%m-%d %H:%M")}
-• Members: {guild.member_count}
-• Channels: {text_channels} text, {voice_channels} voice
-• Roles: {roles}
-• Verification : {guild.verification_level}
-"""
-        await ctx.send(info_text)
+        embed = discord.Embed(
+            title="🏰 Server Information", color=discord.Color.green()
+        )
+        embed.add_field(name="Name", value=guild.name, inline=False)
+        embed.add_field(name="ID", value=guild.id, inline=False)
+        embed.add_field(
+            name="Owner",
+            value=guild.owner.mention if guild.owner else "Unknown",
+            inline=False,
+        )
+        embed.add_field(
+            name="Created",
+            value=guild.created_at.strftime("%Y-%m-%d %H:%M"),
+            inline=False,
+        )
+        embed.add_field(name="Members", value=guild.member_count, inline=False)
+        embed.add_field(
+            name="Channels",
+            value=f"{text_channels} text channels, {voice_channels} voice channels",
+            inline=False,
+        )
+        embed.add_field(name="Roles", value=roles, inline=False)
+        embed.add_field(
+            name="Verification Level", value=guild.verification_level, inline=False
+        )
+        await ctx.send(embed=embed)
 
 
 # Setup
