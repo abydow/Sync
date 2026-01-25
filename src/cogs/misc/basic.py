@@ -34,45 +34,53 @@ class BasicCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="userinfo",
-        aliases=["user", "memberinfo"],
-        help="Get information about a user.",
-    )
+    @commands.command(name="userinfo")
     async def user_info(self, ctx: commands.Context, member: discord.Member = None):
         # show user info
         member = member or ctx.author
 
-        info_text = f"""
-**👤 User Information**
-• Name: {member.name}
-• Display Name: {member.display_name}
-• ID: {member.id}
-• Created At: {member.created_at.strftime("%Y-%m-%d %H:%M")}
-• Bot: {"Yes" if member.bot else "No"}
-• Avatar: [Link]({member.display_avatar.url})
-"""
+        embed1 = discord.Embed(
+            title="👤 User Information", color=discord.Color.blurple()
+        )
+        embed1.add_field(name="Name", value=member.name, inline=False)
+        embed1.add_field(name="Display Name", value=member.display_name, inline=False)
+        embed1.add_field(name="ID", value=member.id, inline=False)
+        embed1.add_field(
+            name="Created At",
+            value=member.created_at.strftime("%Y-%m-%d %H:%M"),
+            inline=False,
+        )
+        embed1.add_field(name="Bot", value="Yes" if member.bot else "No", inline=False)
+        embed1.add_field(name="Avatar", value=member.display_avatar.url, inline=False)
+
         if ctx.guild and isinstance(member, discord.Member):
-            info_text += "\n** 🫱🏼‍🫲🏾 Guild Member info**\n"
-            info_text += f"• Joined : {member.joined_at.strftime('%Y-%m-%d %H:%M')}\n"
-            info_text += f"• Nickname: {member.nick or 'None'}\n"
-            info_text += f"• Top Role: {member.top_role.mention}\n"
+            embed2 = discord.Embed(
+                title="🫱🏼‍🫲🏾 Guild Member info", color=discord.Color.aqua()
+            )
+            embed2.add_field(
+                name="Joined",
+                value=member.joined_at.strftime("%Y-%m-%d %H:%M"),
+                inline=False,
+            )
+            embed2.add_field(name="Nickname", value=member.nick or "None", inline=False)
+            embed2.add_field(
+                name="Top Role", value=member.top_role.mention, inline=False
+            )
 
             # Show roles (highest to lowest, excluding @everyone)
             roles = member.roles[1:][::-1]
             role_mentions = [r.mention for r in roles[:10]]
-            info_text += f"• Roles ({len(roles)}): {', '.join(role_mentions) or 'None'}"
+            embed2.add_field(
+                name="Roles",
+                value=f"{(len(member.roles) - 1)}: {', '.join(role_mentions) or 'None'}",
+            )
 
             if len(roles) > 10:
-                info_text += f" ... and {len(roles) - 10} more"
+                embed2.add_field(name=f" ... and {len(roles) - 10} more")
 
-        await ctx.send(info_text)
+        await ctx.send(embeds=[embed1, embed2] if "embed2" in locals() else [embed1])
 
-    @commands.command(
-        name="serverinfo",
-        aliases=["guildinfo", "server", "guild"],
-        help="Get information about the server.",
-    )
+    @commands.command(name="serverinfo")
     async def server_info(self, ctx: commands.Context):
         # Show server information
         guild = ctx.guild
