@@ -35,8 +35,8 @@ class HelpCog(commands.Cog):
 
             # Build Command Help
             embed = discord.Embed(
-                title=f"Help: {command.name.capitalize()}",
-                description=f"```\n{command.help or 'No description available'}\n```",
+                title=f"📖 {command.name.capitalize()}",
+                description=f">>> {command.help or 'No description available'}",
                 color=discord.Color.from_rgb(88, 101, 242),
             )
 
@@ -50,15 +50,18 @@ class HelpCog(commands.Cog):
                 usage += f" {command.signature}"
 
             embed.add_field(
-                name="📝 Usage", value=f"```yaml\n{usage}\n```", inline=False
+                name="📝 Usage", value=f"```fix\n{usage}\n```", inline=False
             )
 
             embed.set_footer(
-                text=f"Requested by {ctx.author.name}",
+                text=f"💬 Requested by {ctx.author.name} • Use {ctx.clean_prefix}help for all commands",
                 icon_url=ctx.author.avatar.url if ctx.author.avatar else None,
             )
 
             embed.timestamp = discord.utils.utcnow()
+
+            if self.bot.user.avatar:
+                embed.set_thumbnail(url=self.bot.user.avatar.url)
 
             await ctx.send(embed=embed)
 
