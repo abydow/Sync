@@ -31,9 +31,9 @@ class EmbedBuilder:
     def info(title: str, description: str = "", **kwargs) -> discord.Embed:
         """Create Info Embed"""
         embed = discord.Embed(
-            title=f"ℹ️ {title}",
+            title=f"🔍 {title}",
             description=description,
-            color=discord.Color.from_rgb(0, 0, 255),
+            color=discord.Color.from_rgb(45, 182, 255),
             **kwargs,
         )
 

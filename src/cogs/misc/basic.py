@@ -10,11 +10,15 @@ class BasicCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="ping")
+    @commands.command(
+        name="ping",
+        aliases=["pong", "latency", "lag", "ms", "p"],
+        help="Shows the bot's latency",
+    )
     async def ping(self, ctx: commands.Context):
         # Bot latency
         latency_ms = round(self.bot.latency * 1000)
-        embed = EmbedBuilder.info("Latency", f"🏓 Pong!**{latency_ms}ms**")
+        embed = EmbedBuilder.info("Latency", f"**{latency_ms}ms**")
         await ctx.send(embed=embed)
 
     @commands.command(name="info")

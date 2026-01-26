@@ -27,7 +27,7 @@ class HelpCog(commands.Cog):
 
             if not command:
                 embed = EmbedBuilder.error(
-                    "Command Not Found",
+                    "❌ Command Not Found",
                     f"Command `{command_name}` does not exist.",  # working properly
                 )
                 await ctx.send(embed=embed)
@@ -35,23 +35,28 @@ class HelpCog(commands.Cog):
 
             # Build Command Help
             embed = discord.Embed(
-                title=f"Help: {command.name}", color=discord.Color.blue()
+                title=f"Help: {command.name.capitalize()}",
+                description=f"```\n{command.help or 'No description available'}\n```",
+                color=discord.Color.from_rgb(88, 101, 242),
             )
 
-            if command.help:
-                embed.description = command.help
-
             if command.aliases:
-                embed.add_field(
-                    name="Aliases", value=", ".join(command.aliases), inline=False
-                )
+                aliases = " • ".join(f"`{alias}`" for alias in command.aliases)
+                embed.add_field(name="🔗 Aliases", value=aliases, inline=False)
 
             # To Show Usage
             usage = f"{ctx.clean_prefix}{command.qualified_name}"
             if command.signature:
                 usage += f" {command.signature}"
 
-            embed.add_field(name="Usage", value=f"```{usage}```", inline=False)
+            embed.add_field(name="Usage", value=f"```yaml\n{usage}\n```", inline=False)
+
+            embed.set_footer(
+                text=f"Requested by {ctx.author.name}",
+                icon_url=ctx.author.avatar.url if ctx.author.avatar else None,
+            )
+
+            embed.timestamp = discord.utils.utcnow()
 
             await ctx.send(embed=embed)
 
