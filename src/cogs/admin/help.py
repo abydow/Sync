@@ -49,7 +49,9 @@ class HelpCog(commands.Cog):
             if command.signature:
                 usage += f" {command.signature}"
 
-            embed.add_field(name="Usage", value=f"```yaml\n{usage}\n```", inline=False)
+            embed.add_field(
+                name="📝 Usage", value=f"```yaml\n{usage}\n```", inline=False
+            )
 
             embed.set_footer(
                 text=f"Requested by {ctx.author.name}",
@@ -63,11 +65,13 @@ class HelpCog(commands.Cog):
         else:
             """Show All Commands Grouped by Cog"""
             embed = discord.Embed(
-                title="📚 Help",
-                description=f"Use `{ctx.clean_prefix}help [command]` for more info",
-                color=discord.Color.blue(),
+                title="📚 Command Directory",
+                description=(
+                    f"**Need help?** Use `{ctx.clean_prefix}help [command]` for detailed information\n"
+                ),
+                color=discord.Color.from_rgb(88, 101, 242),
+                timestamp=discord.utils.utcnow(),
             )
-
             cogs = {}
 
             for command in self.bot.commands:
@@ -85,14 +89,21 @@ class HelpCog(commands.Cog):
 
             # Add Fields For Each Cog
             for cog_name, commands in sorted(cogs.items()):
-                command_list = ", ".join(f"`{cmd.name}`" for cmd in commands)
+                command_list = " • ".join(f"`{cmd.name}`" for cmd in commands)
+
                 embed.add_field(
-                    name=f"**{cog_name}**",
-                    value=command_list,
+                    name=f"**{cog_name}** ({len(commands)})",
+                    value=command_list or "No commands available.",
                     inline=False,
                 )
 
-            embed.set_footer(text=f"Total commands: {len(self.bot.commands)}")
+            embed.set_footer(
+                text=f"🤖 Total Commands: {len(self.bot.commands)} | Requested by {ctx.author}",
+                icon_url=ctx.author.avatar.url if ctx.author.avatar else None,
+            )
+
+            if self.bot.user.avatar:
+                embed.set_thumbnail(url=self.bot.user.avatar.url)
 
             await ctx.send(embed=embed)
 
