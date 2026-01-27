@@ -27,7 +27,8 @@ class HelpCog(commands.Cog):
 
             if not command:
                 embed = EmbedBuilder.error(
-                    "❌ Command Not Found",
+                    ctx,
+                    "Command Not Found",
                     f"Command `{command_name}` does not exist.",  # working properly
                 )
                 await ctx.send(embed=embed)

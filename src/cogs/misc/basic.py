@@ -18,7 +18,7 @@ class BasicCommands(commands.Cog):
     async def ping(self, ctx: commands.Context):
         # Bot latency
         latency_ms = round(self.bot.latency * 1000)
-        embed = EmbedBuilder.info("Latency", f"**{latency_ms}ms**")
+        embed = EmbedBuilder.info(ctx, "Latency", f"⌬ **{latency_ms}ms**")
         await ctx.send(embed=embed)
 
     @commands.command(name="info")
