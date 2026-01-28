@@ -1,52 +1,65 @@
+from typing import Union
+
 import discord
+from discord.ext import commands
 
 
 class EmbedBuilder:
     """Helper class for creating consistent embeds"""
 
     @staticmethod
-    def success(title: str, description: str = "", **kwargs) -> discord.Embed:
+    def _build_embed(
+        ctx: Union[discord.Interaction, commands.Context],
+        title: str,
+        description: str,
+        color: int,
+        emoji: str,
+        **kwargs,
+    ) -> discord.Embed:
+        user = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
+        bot_user = ctx.client.user if isinstance(ctx, discord.Interaction) else ctx.me
+
+        embed = discord.Embed(
+            title=f"{emoji} {title}",
+            description=description,
+            color=color,
+            timestamp=discord.utils.utcnow(),
+            **kwargs,
+        )
+
+        embed.set_footer(
+            text=f"Requested by {user.name}",
+            icon_url=ctx.author.avatar.url if ctx.author.avatar else None,
+        )
+        embed.set_thumbnail(
+            url=bot_user.display_avatar.url if bot_user.avatar else None
+        )
+        return embed
+
+    @staticmethod
+    def success(ctx, title: str, description: str = "", **kwargs) -> discord.Embed:
         """Create Success Embed"""
-        embed = discord.Embed(
-            title=f"✔ {title}",
-            description=description,
-            color=discord.Color.green(),
-            **kwargs,
+        return EmbedBuilder._build_embed(
+            ctx, title, description, color=0x57F287, emoji="✅", **kwargs
         )
-
-        return embed
 
     @staticmethod
-    def error(title: str, description: str = "", **kwargs) -> discord.Embed:
-        """Create error embed"""
-        embed = discord.Embed(
-            title=f"✕ {title}",
-            description=description,
-            color=discord.Color.red(),
-            **kwargs,
+    def error(ctx, title: str, description: str = "", **kwargs) -> discord.Embed:
+        """Create Error Embed"""
+        return EmbedBuilder._build_embed(
+            ctx, title, description, color=0xED4245, emoji="❌", **kwargs
         )
-        return embed
 
     @staticmethod
-    def info(title: str, description: str = "", **kwargs) -> discord.Embed:
-        """Create info embed"""
-        embed = discord.Embed(
-            title=f"ℹ️ {title}",
-            description=description,
-            color=discord.Color.bule(),
-            **kwargs,
+    def info(ctx, title: str, description: str = "", **kwargs) -> discord.Embed:
+        """Create Info Embed"""
+        return EmbedBuilder._build_embed(
+            ctx, title, description, color=0x99AAB5, emoji="🔍", **kwargs
         )
-
-        return embed
 
     @staticmethod
-    def warning(title: str, description: str = "", **kwargs) -> discord.Embed:
-        """Create warning embed"""
-        embed = discord.Embed(
-            title=f"⚠️ {title}",
-            description=description,
-            color=discord.Color.gold(),
-            **kwargs,
+    def warning(ctx, title: str, description: str = "", **kwargs) -> discord.Embed:
+        """Create Warning Embed"""
+        return EmbedBuilder._build_embed(
+            ctx, title, description, color=0xFEE75C, emoji="⚠️", **kwargs
         )
-
-        return embed

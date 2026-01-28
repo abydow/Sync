@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 # Ensure local 'src' package dir is importable regardless of cwd
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC_DIR = os.path.abspath(os.path.join(HERE, ".."))
+SRC_DIR = os.path.abspath(os.path.join(HERE, "../src"))
 if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
 

@@ -89,6 +89,9 @@ async def setup_hook():
 @bot.event
 async def on_command_error(ctx: commands.Context, error: commands.CommandError):
     # command error handler
+    if hasattr(ctx.command, "on_error"):
+        return  # Let the local handler handle it
+
     if isinstance(error, commands.CommandNotFound):
         return  # ignore unknown commands
     elif isinstance(error, commands.MissingRequiredArgument):

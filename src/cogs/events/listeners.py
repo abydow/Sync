@@ -27,9 +27,8 @@ class EventListeners(commands.Cog):
             async with self.bot.db_session() as session:
                 db = DatabaseService(session)
                 await db.get_or_create_guild(message.guild.id)
-
         # Process Commands (required  for command framework to work)
-        await self.bot.process_commands(message)
+        # await self.bot.process_commands(message)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
@@ -49,10 +48,12 @@ class EventListeners(commands.Cog):
             channel = member.guild.get_channel(config["welcome_channel_id"])
 
             if channel:
-                welcome_message = config["welcome_message"].format(
-                    member=member.mention,
-                    server=member.guild.name,
-                    count=member.guild.member_count,
+                # Safe formatting using replace to avoid KeyErrors with user-provided strings
+                raw_message = config["welcome_message"] or "Welcome {member}!"
+                welcome_message = (
+                    raw_message.replace("{member}", member.mention)
+                    .replace("{server}", member.guild.name)
+                    .replace("{count}", str(member.guild.member_count))
                 )
 
                 try:
@@ -93,7 +94,7 @@ class EventListeners(commands.Cog):
                 embed = discord.Embed(
                     title="Thanks for adding me!",
                     description=f"I'm now in **{guild.name}**",
-                    color=discord.Color.green(),
+                    color=discord.Color.from_rgb(80, 60, 127),
                 )
                 embed.add_field(
                     name="Get Started", value="Use `!help` to see all commands "
