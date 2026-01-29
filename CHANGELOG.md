@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.1.0] - 2026-01-29
+
+### Added
+
+- **Core Features:**
+  - **Custom Help Command:** Added a dynamic `help` command (`src/cogs/admin/help.py`) that lists commands by category and provides detailed usage information.
+  - **Global Error Handling:** Implemented a centralized error handler (`src/cogs/events/error_handler.py`) to catch exceptions and display user-friendly error messages (e.g., missing permissions, bad arguments).
+  - **Embed Utilities:** Created `EmbedBuilder` (`src/utils/embeds.py`) to standardize embed designs (success, error, warning, info) across the application.
+- **Development:**
+  - Updated dependencies and pinned versions in `requirements.txt` and `requirements-dev.txt` for stability.
+
 ## [0.0.4] - 2026-01-20
 
 ### Added

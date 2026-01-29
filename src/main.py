@@ -1,24 +1,14 @@
-import logging
 import os
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 
+from config.logger import setup_logging
+from config.settings import Settings
 from database import AsyncSessionLocal, init_db
 
-# configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-
-logger = logging.getLogger(__name__)
-
-# env. variables
-load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
-
-# intents
+# Configure Logging
+logger = setup_logging()
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -29,89 +19,71 @@ intents.members = True
 class DiscordBot(commands.Bot):
     def __init__(self):
         super().__init__(
-            command_prefix="!",
+            command_prefix=Settings.PREFIX,
             intents=intents,
-            help_command=None,  # disable default help command
+            help_command=None,
+            owner_ids=set(Settings.OWNER_IDS) if Settings.OWNER_IDS else set(),
         )
-        self.db_session = AsyncSessionLocal  # Bot instancence
+        self.db_session = AsyncSessionLocal
+
+    async def setup_hook(self):
+        """Initialize database and load cogs"""
+        # Database
+        await init_db()
+        logger.info("✔ Database Initialized")
+
+        # Load Cogs
+        await self.load_cogs()
+
+    async def load_cogs(self):
+        """Recursively load cogs from src/cogs"""
+        cogs_dir = os.path.join(os.path.dirname(__file__), "cogs")
+
+        count = 0
+        for root, _, files in os.walk(cogs_dir):
+            for file in files:
+                if file.endswith(".py") and not file.startswith("__"):
+                    # Calculate module path relative to src
+                    # e.g. src/cogs/admin/help.py -> cogs.admin.help
+
+                    full_path = os.path.join(root, file)
+                    relative_path = os.path.relpath(
+                        full_path, os.path.dirname(__file__)
+                    )
+                    module_name = relative_path.replace(os.sep, ".")[:-3]
+
+                    try:
+                        await self.load_extension(module_name)
+                        logger.info(f"✔ Loaded cog: {module_name}")
+                        count += 1
+                    except Exception as e:
+                        logger.error(f"✕ Failed to load cog {module_name}: {e}")
+
+        logger.info(f"Loaded {count} cogs")
+
+    async def on_ready(self):
+        """Bot Startup Event"""
+        logger.info(f"✔ Bot connected as --> {self.user}")
+        logger.info(f"⑃ Currently serving {len(self.guilds)} guild(s)")
+
+        await self.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.watching, name=f"{Settings.PREFIX}help"
+            ),
+            status=discord.Status.online,
+        )
 
 
+# Instance
 bot = DiscordBot()
-
-
-@bot.event
-async def on_ready():
-    "after bot is ready"
-    logger.info(f" ✔ Bot connected as --> {bot.user} ")
-    logger.info(f" ⑃ Currently serving {len(bot.guilds):^3} guild(s) ")
-
-    # bot status
-    await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching, name="!help for commands"
-        ),
-        status=discord.Status.online,
-    )
-
-
-@bot.event
-async def setup_hook():
-    """Initialize database and load cogs"""
-    # database
-
-    await init_db()
-    logger.info("✔ Database Initialized")
-
-    # load cogs
-    cog_files = []
-
-    # Recursively find all cog files in src/cogs
-
-    for root, dirs, files in os.walk(os.path.join("src", "cogs")):
-        for file in files:
-            if file.endswith(".py") and not file.startswith("__"):
-                # Convert file path to module name
-                path = os.path.relpath(os.path.join(root, file), "src")
-                module = path.replace(os.sep, ".")[:-3]  # remove .py
-                cog_files.append(module)
-
-    # Now We have to load each cog
-
-    for cog in cog_files:
-        try:
-            await bot.load_extension(cog)
-            logger.info(f" ✔ Loaded cog: {cog} ")
-        except Exception as e:
-            logger.error(f" ✕ Failed to load cog {cog}: {e} ")
-
-
-# Error handling
-@bot.event
-async def on_command_error(ctx: commands.Context, error: commands.CommandError):
-    # command error handler
-    if hasattr(ctx.command, "on_error"):
-        return  # Let the local handler handle it
-
-    if isinstance(error, commands.CommandNotFound):
-        return  # ignore unknown commands
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f"⚠ Missing argument: {error.param.name}")
-    elif isinstance(error, commands.BotMissingPermissions):
-        await ctx.send(
-            f"⚠ I do not have the required permission : {', '.join(error.missing_permissions)}"
-        )
-    else:
-        logger.error(f"✕ Error in command : {error}")
-        await ctx.send(
-            f"⚠ An error :{str(error)[:100]} occurred while processing the command"
-        )
-
-
-# Final execution
 
 if __name__ == "__main__":
     try:
+        # Validate critical settings
+        Settings.validate()
         logger.info("⚿ Starting bot...")
-        bot.run(TOKEN)
+        bot.run(Settings.DISCORD_TOKEN)
+    except ValueError as e:
+        logger.critical(f"Configuration Error: {e}")
     except Exception as e:
-        logger.error(f"✕ Bot crashed: {e}")
+        logger.critical(f"Bot crashed: {e}", exc_info=True)

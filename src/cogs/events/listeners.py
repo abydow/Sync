@@ -1,11 +1,11 @@
-import logging
-
 import discord
 from discord.ext import commands
 
+from config.logger import setup_logging
+from config.settings import Settings
 from database.service import DatabaseService
 
-logger = logging.getLogger(__name__)
+logger = setup_logging()
 
 
 class EventListeners(commands.Cog):
@@ -27,16 +27,14 @@ class EventListeners(commands.Cog):
             async with self.bot.db_session() as session:
                 db = DatabaseService(session)
                 await db.get_or_create_guild(message.guild.id)
-        # Process Commands (required  for command framework to work)
-        # await self.bot.process_commands(message)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         """Handle Member Joining Server"""
         if member.bot:
             return
-        else:
-            logger.info(f"👋 {member} joined {member.guild}")
+
+        logger.info(f"👋 {member} joined {member.guild}")
 
         # Get Guild Config
         async with self.bot.db_session() as session:
@@ -48,8 +46,10 @@ class EventListeners(commands.Cog):
             channel = member.guild.get_channel(config["welcome_channel_id"])
 
             if channel:
-                # Safe formatting using replace to avoid KeyErrors with user-provided strings
-                raw_message = config["welcome_message"] or "Welcome {member}!"
+                # Safe formatting
+                raw_message = (
+                    config["welcome_message"] or Settings.DEFAULT_WELCOME_MESSAGE
+                )
                 welcome_message = (
                     raw_message.replace("{member}", member.mention)
                     .replace("{server}", member.guild.name)
