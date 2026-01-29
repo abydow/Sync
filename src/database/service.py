@@ -1,4 +1,5 @@
 from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models import Guild, User
@@ -18,7 +19,14 @@ class DatabaseService:
         if not guild:
             guild = Guild(guild_id=guild_id)
             self.session.add(guild)
-            await self.session.commit()
+            try:
+                await self.session.commit()
+            except IntegrityError:
+                await self.session.rollback()
+                result = await self.session.execute(
+                    select(Guild).where(Guild.guild_id == guild_id)
+                )
+                guild = result.scalar_one()
 
         return guild
 
@@ -39,8 +47,11 @@ class DatabaseService:
         await self.session.execute(
             update(Guild).where(Guild.guild_id == guild_id).values(prefix=prefix)
         )
-
-        await self.session.commit()
+        try:
+            await self.session.commit()
+        except Exception:
+            await self.session.rollback()
+            raise
 
     async def update_welcome_settings(
         self, guild_id: int, enabled: bool, channel_id: int, message: str
@@ -55,8 +66,11 @@ class DatabaseService:
                 welcome_message=message,
             )
         )
-
-        await self.session.commit()
+        try:
+            await self.session.commit()
+        except Exception:
+            await self.session.rollback()
+            raise
 
     async def get_or_create_user(self, user_id: int, username: str) -> User:
         """Get User or Create"""
@@ -66,6 +80,13 @@ class DatabaseService:
         if not user:
             user = User(user_id=user_id, username=username)
             self.session.add(user)
-            await self.session.commit()
+            try:
+                await self.session.commit()
+            except IntegrityError:
+                await self.session.rollback()
+                result = await self.session.execute(
+                    select(User).where(User.user_id == user_id)
+                )
+                user = result.scalar_one()
 
         return user
