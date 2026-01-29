@@ -17,9 +17,7 @@ class Settings:
     OWNER_IDS = [int(id) for id in os.getenv("OWNER_IDS", "").split(",") if id.strip()]
 
     # Database
-    DATABASE_URL = os.getenv(
-        "DATABASE_URL", f"sqlite+aiosqlite:///{BASE_DIR}/discord_bot.db"
-    )
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./bot.db")
 
     # Links
     SUPPORT_SERVER_URL = os.getenv("SUPPORT_SERVER_URL", "https://discord.gg/Y6dsH9kF")
