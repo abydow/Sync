@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -55,3 +57,23 @@ class User(Base):
 
     def __repr__(self):
         return f"<User {self.user_id}>"
+
+
+class ModerationCase(Base):
+    """Moderation Action Log"""
+
+    __tablename__ = "moderation_cases"
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(BigInteger, index=True)
+    case_number = Column(Integer, nullable=False)
+    user_id = Column(BigInteger, nullable=False)
+    moderator_id = Column(BigInteger, nullable=False)
+    action = Column(String(50), nullable=False)
+    reason = Column(String(500), nullable=False)
+    duration = Column(Integer, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (CheckConstraint("case_number > 0", name="valid_case_number"),)
+
+    # def __repr__(self):
+    #    return f"<ModerationCase {self.guild_id} Case #{self.case_number}>"
