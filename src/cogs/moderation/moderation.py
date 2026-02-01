@@ -71,3 +71,34 @@ class ModerationCog(commands.Cog):
             return
 
         # Ban User
+        try:
+            await ctx.guild.ban(user, reason=f"{ctx.author} - {reason}")
+
+            # Log To Database
+            await self._log_moderation(
+                ctx.guild.id, user.id, ctx.author.id, "ban", reason
+            )
+
+            # Success message
+            embed = EmbedBuilder.success(
+                "User Banned",
+                f"{user.mention} has been banned",
+            )
+            embed.add_field(name="Reason", value=reason, inline=False)
+            embed.add_field(name="Moderator", value=str(ctx.author.mention))
+            await ctx.send(embed=embed)
+
+            # DM
+            try:
+                dm_embed = EmbedBuilder.warning(
+                    "Banned from server",
+                    f"You have been banned from **{ctx.guild.name}**",
+                )
+                dm_embed.add_field(name="Reason", value=reason)
+                await user.send(embed=dm_embed)
+            except discord.Forbidden:
+                pass
+
+        except discord.Forbidden:
+            embed = EmbedBuilder.error("Permission Denied", "Cannot ban this user.")
+            await ctx.send(embed=embed)
