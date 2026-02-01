@@ -102,3 +102,58 @@ class ModerationCog(commands.Cog):
         except discord.Forbidden:
             embed = EmbedBuilder.error("Permission Denied", "Cannot ban this user.")
             await ctx.send(embed=embed)
+
+    @commands.hybrid_command(name="kick", help="Kick a user from the server")
+    @commands.has_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
+    async def kick(
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        *,
+        reason: str = "No reason provided",
+    ):
+        """Kick User"""
+
+        if member.id == ctx.author.id:
+            embed = EmbedBuilder.error("Cannot kick yourself")
+            await ctx.send(embed=embed)
+            return
+
+        # role hierarchy
+
+        if member.top_role >= ctx.author.top_role:
+            embed = EmbedBuilder.error(
+                "Cannot kick", "Target user has equal or higher role"
+            )
+
+            await ctx.send(embed=embed)
+            return
+
+        try:
+            await member.kick(reason=f"{ctx.author} - {reason}")
+
+            await self._log_moderation(
+                ctx.guild.id, member.id, ctx.author.id, "kick", reason
+            )
+
+            embed = EmbedBuilder.success(
+                "User Kicked",
+                f"{member.mention} has been kicked",
+            )
+            embed.add_field(name="Reason", value=reason, inline=False)
+            await ctx.send(embed=embed)
+
+            await self._send_mod_log(ctx.guild, embed)
+
+            try:
+                await member.send(
+                    f"You have been kicked from **{ctx.guild.name}**\nReason: {reason}"
+                )
+
+            except discord.Forbidden:
+                pass
+
+        except discord.Forbidden:
+            embed = EmbedBuilder.error("Permission Denied", "Cannot kick this user.")
+            await ctx.send(embed=embed)
