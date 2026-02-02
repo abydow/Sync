@@ -157,3 +157,60 @@ class ModerationCog(commands.Cog):
         except discord.Forbidden:
             embed = EmbedBuilder.error("Permission Denied", "Cannot kick this user.")
             await ctx.send(embed=embed)
+
+    @commands.hybrid_command(
+        name="timeout", aliases=["mute"], help="Timeout a user (prevent speaking)"
+    )
+    @commands.has_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
+    async def timeout(
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        duration: str,
+        *,
+        reason: str = "No reason provided",
+    ):
+        """Timeout"""
+
+        duration_mapping = {
+            "s": 1,
+            "m": 60,
+            "h": 3600,
+            "d": 86400,
+            "w": 604800,
+        }
+
+        try:
+            unit = duration[-1]
+            amount = int(duration[:-1])
+            seconds = amount * duration_mapping[unit]
+
+        except (ValueError, KeyError):
+            embed = EmbedBuilder.error(
+                "Invalid DurationUse format: `10m`, `1h`, `1d`, `1w`"
+            )
+            await ctx.send(embed=embed)
+            return
+
+        try:
+            await member.timeout(
+                timedelta(seconds=seconds), reason=f"{ctx.author} - {reason}"
+            )
+
+            await self._log_moderation(
+                ctx.guild_id, member.id, ctx.author.id, "timeout", reason, seconds
+            )
+
+            embed = EmbedBuilder.success(
+                "User Timed Out", f"{member.mention} has been timed out"
+            )
+            embed.add_field(name="Duration", value=f"{amount}{unit}")
+            embed.add_field(name="Reason", value=reason, inline=False)
+            await ctx.send(embed=embed)
+
+            await self._send_mod_log(ctx.guild, embed)
+
+        except discord.Forbidden:
+            embed = EmbedBuilder.error("Permission Denied")
+            await ctx.send(embed=embed)
