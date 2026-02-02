@@ -214,3 +214,36 @@ class ModerationCog(commands.Cog):
         except discord.Forbidden:
             embed = EmbedBuilder.error("Permission Denied")
             await ctx.send(embed=embed)
+
+    @commands.hybrid_command(name="unban", help="Unban a user")
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    async def unban(
+        self,
+        ctx: commands.Context,
+        user: discord.User,
+        *,
+        reason: str = "No reason provided",
+    ):
+        """Unban a user"""
+
+        try:
+            await ctx.guild.unban(user, reason=f"{ctx.author} - {reason}")
+
+            embed = EmbedBuilder.success(
+                "User Unbanned", f"{user.mention} has been unbanned"
+            )
+            await ctx.send(embed=embed)
+
+            await self._send_mod_log(ctx.guild, embed)
+
+        except discord.NotFound:
+            embed = EmbedBuilder.error("User Not Banned")
+            await ctx.send(embed=embed)
+        except discord.Forbidden:
+            embed = EmbedBuilder.error("Permission Denied")
+            await ctx.send(embed=embed)
+
+
+async def setup(bot):
+    await bot.add_cog(ModerationCog(bot))
