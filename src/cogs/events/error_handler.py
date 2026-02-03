@@ -2,6 +2,7 @@ import logging
 
 import discord
 from discord.ext import commands
+from sqlalchemy.exc import SQLAlchemyError
 
 from utils.embeds import EmbedBuilder
 
@@ -35,6 +36,15 @@ class ErrorHandler(commands.Cog):
                 ctx,
                 title="Missing Argument",
                 description=f"You missed a required argument: `{error.param.name}`",
+            )
+            await ctx.send(embed=embed)
+
+        elif isinstance(error, SQLAlchemyError):
+            logger.error("Database Error:", exc_info=error)
+            embed = EmbedBuilder.error(
+                ctx,
+                title="Database Error",
+                description="A database error occurred. Please try again later.",
             )
             await ctx.send(embed=embed)
 

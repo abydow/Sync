@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models import Guild, User
+from models.dto import GuildConfigDTO
 
 
 class DatabaseService:
@@ -30,17 +31,17 @@ class DatabaseService:
 
         return guild
 
-    async def get_guild_config(self, guild_id: int) -> dict:
+    async def get_guild_config(self, guild_id: int) -> GuildConfigDTO:
         """Get Guild Config."""
         guild = await self.get_or_create_guild(guild_id)
-        return {
-            "prefix": guild.prefix,
-            "welcome_enabled": guild.welcome_enabled,
-            "welcome_message": guild.welcome_message,
-            "welcome_channel_id": guild.welcome_channel_id,
-            "modlog_channel_id": guild.modlog_channel_id,
-            "auto_role_id": guild.auto_role_id,
-        }
+        return GuildConfigDTO(
+            prefix=guild.prefix,
+            welcome_enabled=guild.welcome_enabled,
+            welcome_message=guild.welcome_message,
+            welcome_channel_id=guild.welcome_channel_id,
+            modlog_channel_id=guild.modlog_channel_id,
+            auto_role_id=guild.auto_role_id,
+        )
 
     async def update_guild_prefix(self, guild_id: int, prefix: str):
         """update guild command prefix"""

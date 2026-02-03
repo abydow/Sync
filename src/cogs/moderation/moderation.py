@@ -3,9 +3,11 @@ from datetime import timedelta
 
 import discord
 from discord.ext import commands
+from sqlalchemy import func, select
 
+from database.models import ModerationCase
 from database.service import DatabaseService
-from utils.checks import is_moderator
+from utils.checks import check_hierarchy
 from utils.embeds import EmbedBuilder
 
 logger = logging.getLogger(__name__)
@@ -28,20 +30,41 @@ class ModerationCog(commands.Cog):
     ):
         """Log Moderation Action To Database"""
         async with self.bot.db_session() as session:
-            db = DatabaseService(session)
+            # Get max case number for guild
+            result = await session.execute(
+                select(func.max(ModerationCase.case_number)).where(
+                    ModerationCase.guild_id == guild_id
+                )
+            )
+            max_case = result.scalar() or 0
 
-            pass
+            case = ModerationCase(
+                guild_id=guild_id,
+                case_number=max_case + 1,
+                user_id=user_id,
+                moderator_id=moderator_id,
+                action=action,
+                reason=reason,
+                duration=duration,
+            )
+            session.add(case)
+            await session.commit()
 
     async def _send_mod_log(self, guild: discord.Guild, embed: discord.Embed):
         """Send Moderation Log To Mod Channel"""
-        async with self.bot.db_session() as session:
-            db = DatabaseService(session)
-            config = await db.get_guild_config(guild.id)
+        # Try cache first? The service doesn't have access to cache directly here easily unless we pass bot.
+        # But for mod logs, we can use the bot's cache.
+        config = self.bot.cache.get_config(guild.id)
+        if not config:
+            async with self.bot.db_session() as session:
+                db = DatabaseService(session)
+                config = await db.get_guild_config(guild.id)
+            self.bot.cache.set_config(guild.id, config)
 
-        if not config["modlog_channel_id"]:
+        if not config or not config.modlog_channel_id:
             return
 
-        mod_channel = guild.get_channel(config["modlog_channel_id"])
+        mod_channel = guild.get_channel(config.modlog_channel_id)
         if mod_channel:
             try:
                 await mod_channel.send(embed=embed)
@@ -54,7 +77,7 @@ class ModerationCog(commands.Cog):
     async def ban(
         self,
         ctx: commands.Context,
-        user: discord.Member,
+        user: discord.User,
         *,
         reason: str = "No reason provided",
     ):
@@ -66,18 +89,18 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        if user.top_role >= ctx.author.top_role:
-            embed = EmbedBuilder.error(
-                "Cannot ban", "Target user has equal or higher role"
-            )
-
-            await ctx.send(embed=embed)
-            return
-
         if user.id == self.bot.user.id:
             embed = EmbedBuilder.error("Cannot ban the bot")
             await ctx.send(embed=embed)
             return
+
+        member = ctx.guild.get_member(user.id)
+        if member:
+            passed, error = await check_hierarchy(ctx, member)
+            if not passed:
+                embed = EmbedBuilder.error("Cannot ban", error)
+                await ctx.send(embed=embed)
+                return
 
         # Ban User
         try:
@@ -131,13 +154,9 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        # role hierarchy
-
-        if member.top_role >= ctx.author.top_role:
-            embed = EmbedBuilder.error(
-                "Cannot kick", "Target user has equal or higher role"
-            )
-
+        passed, error = await check_hierarchy(ctx, member)
+        if not passed:
+            embed = EmbedBuilder.error("Cannot kick", error)
             await ctx.send(embed=embed)
             return
 
@@ -189,11 +208,9 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        if member.top_role >= ctx.author.top_role:
-            embed = EmbedBuilder.error(
-                "Cannot timeout", "Target user has equal or higher role"
-            )
-
+        passed, error = await check_hierarchy(ctx, member)
+        if not passed:
+            embed = EmbedBuilder.error("Cannot timeout", error)
             await ctx.send(embed=embed)
             return
 

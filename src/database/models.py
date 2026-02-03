@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -75,5 +73,5 @@ class ModerationCase(Base):
 
     __table_args__ = (CheckConstraint("case_number > 0", name="valid_case_number"),)
 
-    # def __repr__(self):
-    #    return f"<ModerationCase {self.guild_id} Case #{self.case_number}>"
+    def __repr__(self):
+        return f"<ModerationCase {self.guild_id} Case #{self.case_number}>"

@@ -48,7 +48,7 @@ class TestEmbedBuilder(unittest.TestCase):
         self.assertIsInstance(embed, discord.Embed)
         self.assertEqual(embed.title, "🔍 Info Title")
         self.assertEqual(embed.description, "Info Description")
-        self.assertEqual(embed.color.value, 0x5865F2)  # Blurple
+        self.assertEqual(embed.color.value, 0x99AAB5)  # Grey
 
     def test_warning_embed(self):
         embed = EmbedBuilder.warning(self.ctx, "Warning Title", "Warning Description")

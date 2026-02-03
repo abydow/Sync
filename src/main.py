@@ -6,6 +6,7 @@ from discord.ext import commands
 from config.logger import setup_logging
 from config.settings import Settings
 from database import AsyncSessionLocal, init_db
+from services.cache import GuildCache
 
 # Configure Logging
 logger = setup_logging()
@@ -25,6 +26,7 @@ class DiscordBot(commands.Bot):
             owner_ids=set(Settings.OWNER_IDS) if Settings.OWNER_IDS else set(),
         )
         self.db_session = AsyncSessionLocal
+        self.cache = GuildCache()
 
     async def setup_hook(self):
         """Initialize database and load cogs"""
