@@ -8,7 +8,7 @@ from database.service import DatabaseService
 from utils.checks import is_moderator
 from utils.embeds import EmbedBuilder
 
-logger = logging.getlogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ModerationCog(commands.Cog):
@@ -49,11 +49,12 @@ class ModerationCog(commands.Cog):
                 logger.warning(f"Cannot send to mod log in {guild}")
 
     @commands.hybrid_command(name="ban", help="Ban a user from the server")
+    @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     async def ban(
         self,
         ctx: commands.Context,
-        user: discord.User,
+        user: discord.Member,
         *,
         reason: str = "No reason provided",
     ):
@@ -62,6 +63,14 @@ class ModerationCog(commands.Cog):
         # Prevent Banning Yourself/bot
         if user.id == ctx.author.id:
             embed = EmbedBuilder.error("Cannot ban yourself")
+            await ctx.send(embed=embed)
+            return
+
+        if user.top_role >= ctx.author.top_role:
+            embed = EmbedBuilder.error(
+                "Cannot ban", "Target user has equal or higher role"
+            )
+
             await ctx.send(embed=embed)
             return
 
@@ -85,8 +94,10 @@ class ModerationCog(commands.Cog):
                 f"{user.mention} has been banned",
             )
             embed.add_field(name="Reason", value=reason, inline=False)
-            embed.add_field(name="Moderator", value=str(ctx.author.mention))
+            embed.add_field(name="Moderator", value=ctx.author.mention)
             await ctx.send(embed=embed)
+
+            await self._send_mod_log(ctx.guild, embed)
 
             # DM
             try:
@@ -100,7 +111,7 @@ class ModerationCog(commands.Cog):
                 pass
 
         except discord.Forbidden:
-            embed = EmbedBuilder.error("Permission Denied", "Cannot ban this user.")
+            embed = EmbedBuilder.error("Permission Denied", "Cannot ban this user")
             await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="kick", help="Kick a user from the server")
@@ -155,7 +166,7 @@ class ModerationCog(commands.Cog):
                 pass
 
         except discord.Forbidden:
-            embed = EmbedBuilder.error("Permission Denied", "Cannot kick this user.")
+            embed = EmbedBuilder.error("Permission Denied", "Cannot kick this user")
             await ctx.send(embed=embed)
 
     @commands.hybrid_command(
@@ -173,6 +184,19 @@ class ModerationCog(commands.Cog):
     ):
         """Timeout"""
 
+        if member.id == ctx.author.id:
+            embed = EmbedBuilder.error("Cannot timeout yourself")
+            await ctx.send(embed=embed)
+            return
+
+        if member.top_role >= ctx.author.top_role:
+            embed = EmbedBuilder.error(
+                "Cannot timeout", "Target user has equal or higher role"
+            )
+
+            await ctx.send(embed=embed)
+            return
+
         duration_mapping = {
             "s": 1,
             "m": 60,
@@ -188,7 +212,7 @@ class ModerationCog(commands.Cog):
 
         except (ValueError, KeyError):
             embed = EmbedBuilder.error(
-                "Invalid DurationUse format: `10m`, `1h`, `1d`, `1w`"
+                "Invalid Duration", "Use format: `10m`, `1h`, `1d`, `1w`"
             )
             await ctx.send(embed=embed)
             return
@@ -199,7 +223,7 @@ class ModerationCog(commands.Cog):
             )
 
             await self._log_moderation(
-                ctx.guild_id, member.id, ctx.author.id, "timeout", reason, seconds
+                ctx.guild.id, member.id, ctx.author.id, "timeout", reason, seconds
             )
 
             embed = EmbedBuilder.success(
