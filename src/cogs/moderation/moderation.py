@@ -3,10 +3,9 @@ from datetime import timedelta
 
 import discord
 from discord.ext import commands
-from sqlalchemy import func, select
 
-from database.models import ModerationCase
 from database.service import DatabaseService
+from services.moderation import ModerationService
 from utils.checks import check_hierarchy
 from utils.embeds import EmbedBuilder
 
@@ -30,25 +29,15 @@ class ModerationCog(commands.Cog):
     ):
         """Log Moderation Action To Database"""
         async with self.bot.db_session() as session:
-            # Get max case number for guild
-            result = await session.execute(
-                select(func.max(ModerationCase.case_number)).where(
-                    ModerationCase.guild_id == guild_id
-                )
-            )
-            max_case = result.scalar() or 0
-
-            case = ModerationCase(
+            service = ModerationService(session)
+            await service.log_case(
                 guild_id=guild_id,
-                case_number=max_case + 1,
                 user_id=user_id,
                 moderator_id=moderator_id,
                 action=action,
                 reason=reason,
                 duration=duration,
             )
-            session.add(case)
-            await session.commit()
 
     async def _send_mod_log(self, guild: discord.Guild, embed: discord.Embed):
         """Send Moderation Log To Mod Channel"""
@@ -57,9 +46,8 @@ class ModerationCog(commands.Cog):
         config = self.bot.cache.get_config(guild.id)
         if not config:
             async with self.bot.db_session() as session:
-                db = DatabaseService(session)
+                db = DatabaseService(session, self.bot.cache)
                 config = await db.get_guild_config(guild.id)
-            self.bot.cache.set_config(guild.id, config)
 
         if not config or not config.modlog_channel_id:
             return

@@ -6,6 +6,7 @@ from sqlalchemy import (
     DateTime,
     Integer,
     String,
+    UniqueConstraint,
 )
 from sqlalchemy.sql import func
 
@@ -71,7 +72,10 @@ class ModerationCase(Base):
     duration = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    __table_args__ = (CheckConstraint("case_number > 0", name="valid_case_number"),)
+    __table_args__ = (
+        CheckConstraint("case_number > 0", name="valid_case_number"),
+        UniqueConstraint("guild_id", "case_number", name="uq_guild_case_number"),
+    )
 
     def __repr__(self):
         return f"<ModerationCase {self.guild_id} Case #{self.case_number}>"

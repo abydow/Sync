@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 from config.logger import setup_logging
-from config.settings import Settings
+from config.settings import settings
 from database.service import DatabaseService
 
 logger = setup_logging()
@@ -26,7 +26,7 @@ class EventListeners(commands.Cog):
         if message.guild:
             if not self.bot.cache.has_guild(message.guild.id):
                 async with self.bot.db_session() as session:
-                    db = DatabaseService(session)
+                    db = DatabaseService(session, self.bot.cache)
                     await db.get_or_create_guild(message.guild.id)
                 self.bot.cache.add_guild(message.guild.id)
 
@@ -42,9 +42,8 @@ class EventListeners(commands.Cog):
         config = self.bot.cache.get_config(member.guild.id)
         if not config:
             async with self.bot.db_session() as session:
-                db = DatabaseService(session)
+                db = DatabaseService(session, self.bot.cache)
                 config = await db.get_guild_config(member.guild.id)
-            self.bot.cache.set_config(member.guild.id, config)
 
         # Send Welcome Message <if enabled>
         if config.welcome_enabled and config.welcome_channel_id:
@@ -52,7 +51,7 @@ class EventListeners(commands.Cog):
 
             if channel:
                 # Safe formatting
-                raw_message = config.welcome_message or Settings.DEFAULT_WELCOME_MESSAGE
+                raw_message = config.welcome_message or settings.DEFAULT_WELCOME_MESSAGE
                 welcome_message = (
                     raw_message.replace("{member}", member.mention)
                     .replace("{server}", member.guild.name)
@@ -87,7 +86,7 @@ class EventListeners(commands.Cog):
 
         # Create Guild Config
         async with self.bot.db_session() as session:
-            db = DatabaseService(session)
+            db = DatabaseService(session, self.bot.cache)
             await db.get_or_create_guild(guild.id)
 
         # Send Welcome DM to owner

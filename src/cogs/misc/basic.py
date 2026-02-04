@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from discord.utils import format_dt
 
-from config.settings import Settings
+from config.settings import settings
 from utils.embeds import EmbedBuilder
 
 
@@ -15,6 +15,7 @@ def get_uptime(start_time):
     minutes, seconds = divmod(remainder, 60)
     days, hours = divmod(hours, 24)
     return f"{days}d {hours}h {minutes}m "
+
 
 
 class BasicCommands(commands.Cog):
@@ -106,22 +107,22 @@ class BasicCommands(commands.Cog):
             )
         )
 
-        if Settings.SUPPORT_SERVER_URL:
+        if settings.SUPPORT_SERVER_URL:
             view.add_item(
                 discord.ui.Button(
                     label="Support",
                     style=discord.ButtonStyle.link,
-                    url=Settings.SUPPORT_SERVER_URL,
+                    url=settings.SUPPORT_SERVER_URL,
                     emoji="🛡️",
                 )
             )
 
-        if Settings.GITHUB_REPO_URL:
+        if settings.GITHUB_REPO_URL:
             view.add_item(
                 discord.ui.Button(
                     label="Github",
                     style=discord.ButtonStyle.link,
-                    url=Settings.GITHUB_REPO_URL,
+                    url=settings.GITHUB_REPO_URL,
                     emoji="🐙",
                 )
             )

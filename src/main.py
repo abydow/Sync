@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 from config.logger import setup_logging
-from config.settings import Settings
+from config.settings import settings
 from database import AsyncSessionLocal, init_db
 from services.cache import GuildCache
 
@@ -20,10 +20,10 @@ intents.members = True
 class DiscordBot(commands.Bot):
     def __init__(self):
         super().__init__(
-            command_prefix=Settings.PREFIX,
+            command_prefix=settings.PREFIX,
             intents=intents,
             help_command=None,
-            owner_ids=set(Settings.OWNER_IDS) if Settings.OWNER_IDS else set(),
+            owner_ids=set(settings.OWNER_IDS) if settings.OWNER_IDS else set(),
         )
         self.db_session = AsyncSessionLocal
         self.cache = GuildCache()
@@ -70,7 +70,7 @@ class DiscordBot(commands.Bot):
 
         await self.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.watching, name=f"{Settings.PREFIX}help"
+                type=discord.ActivityType.watching, name=f"{settings.PREFIX}help"
             ),
             status=discord.Status.online,
         )
@@ -82,9 +82,8 @@ bot = DiscordBot()
 if __name__ == "__main__":
     try:
         # Validate critical settings
-        Settings.validate()
         logger.info("⚿ Starting bot...")
-        bot.run(Settings.DISCORD_TOKEN)
+        bot.run(settings.DISCORD_TOKEN)
     except ValueError as e:
         logger.critical(f"Configuration Error: {e}")
     except Exception as e:

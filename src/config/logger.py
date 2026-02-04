@@ -2,7 +2,7 @@ import logging
 import logging.handlers
 import sys
 
-from .settings import Settings
+from .settings import settings
 
 
 def setup_logging():
@@ -21,7 +21,7 @@ def setup_logging():
 
     # File Handler (Rotating)
     file_handler = logging.handlers.RotatingFileHandler(
-        filename=Settings.LOG_DIR / "bot.log",
+        filename=settings.LOG_DIR / "bot.log",
         maxBytes=5 * 1024 * 1024,  # 5 MB
         backupCount=5,
         encoding="utf-8",
