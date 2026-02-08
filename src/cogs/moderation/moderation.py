@@ -59,7 +59,11 @@ class ModerationCog(commands.Cog):
             except discord.Forbidden:
                 logger.warning(f"Cannot send to mod log in {guild}")
 
-    @commands.hybrid_command(name="ban", help="Ban a user from the server")
+    @commands.hybrid_command(
+        name="ban",
+        aliases=["hammer", "GTFO", "permaban"],
+        help="Ban a user from the server",
+    )
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     async def ban(
@@ -125,7 +129,9 @@ class ModerationCog(commands.Cog):
             embed = EmbedBuilder.error("Permission Denied", "Cannot ban this user")
             await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="kick", help="Kick a user from the server")
+    @commands.hybrid_command(
+        name="kick", aliases=["boot", "k", "remove"], help="Kick a user from the server"
+    )
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
     async def kick(
@@ -177,7 +183,9 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.hybrid_command(
-        name="timeout", aliases=["mute"], help="Timeout a user (prevent speaking)"
+        name="timeout",
+        aliases=["mute", "to", "shush"],
+        help="Timeout a user (prevent speaking)",
     )
     @commands.has_permissions(moderate_members=True)
     @commands.bot_has_permissions(moderate_members=True)
@@ -244,7 +252,9 @@ class ModerationCog(commands.Cog):
             embed = EmbedBuilder.error("Permission Denied")
             await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="unban", help="Unban a user")
+    @commands.hybrid_command(
+        name="unban", aliases=["pardon", "ub", "lift"], help="Unban a user"
+    )
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     async def unban(
