@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 from config.logger import setup_logging
-from config.settings import Settings
+from config.settings import settings
 from database.service import DatabaseService
 
 logger = setup_logging()
@@ -22,11 +22,13 @@ class EventListeners(commands.Cog):
         if message.author.bot:
             return
 
-        # Ensure Guild Exists in Database
+        # Ensure Guild Exists in Database (Check Cache First)
         if message.guild:
-            async with self.bot.db_session() as session:
-                db = DatabaseService(session)
-                await db.get_or_create_guild(message.guild.id)
+            if not self.bot.cache.has_guild(message.guild.id):
+                async with self.bot.db_session() as session:
+                    db = DatabaseService(session, self.bot.cache)
+                    await db.get_or_create_guild(message.guild.id)
+                self.bot.cache.add_guild(message.guild.id)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
@@ -37,19 +39,19 @@ class EventListeners(commands.Cog):
         logger.info(f"👋 {member} joined {member.guild}")
 
         # Get Guild Config
-        async with self.bot.db_session() as session:
-            db = DatabaseService(session)
-            config = await db.get_guild_config(member.guild.id)
+        config = self.bot.cache.get_config(member.guild.id)
+        if not config:
+            async with self.bot.db_session() as session:
+                db = DatabaseService(session, self.bot.cache)
+                config = await db.get_guild_config(member.guild.id)
 
         # Send Welcome Message <if enabled>
-        if config["welcome_enabled"] and config["welcome_channel_id"]:
-            channel = member.guild.get_channel(config["welcome_channel_id"])
+        if config.welcome_enabled and config.welcome_channel_id:
+            channel = member.guild.get_channel(config.welcome_channel_id)
 
             if channel:
                 # Safe formatting
-                raw_message = (
-                    config["welcome_message"] or Settings.DEFAULT_WELCOME_MESSAGE
-                )
+                raw_message = config.welcome_message or settings.DEFAULT_WELCOME_MESSAGE
                 welcome_message = (
                     raw_message.replace("{member}", member.mention)
                     .replace("{server}", member.guild.name)
@@ -62,8 +64,8 @@ class EventListeners(commands.Cog):
                     logger.warning(f"Cannot send message to {channel}")
 
         # Auto-assign role if configured
-        if config["auto_role_id"]:
-            role = member.guild.get_role(config["auto_role_id"])
+        if config.auto_role_id:
+            role = member.guild.get_role(config.auto_role_id)
             if role:
                 try:
                     await member.add_roles(role)
@@ -84,7 +86,7 @@ class EventListeners(commands.Cog):
 
         # Create Guild Config
         async with self.bot.db_session() as session:
-            db = DatabaseService(session)
+            db = DatabaseService(session, self.bot.cache)
             await db.get_or_create_guild(guild.id)
 
         # Send Welcome DM to owner

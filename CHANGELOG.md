@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.1.1] - 2026-02-09
+
+### Added
+
+- **Moderation Module:**
+  - **New Moderation Cog:** Implemented `ModerationCog` (`src/cogs/moderation/moderation.py`) featuring `ban`, `kick`, `timeout`, and `unban` commands.
+  - **Hybrid Command Support:** All moderation commands are implemented as hybrid commands, supporting both traditional prefix and modern Discord slash commands.
+  - **Hierarchy Enforcement:** Added `check_hierarchy` (`src/utils/checks.py`) to ensure moderators cannot perform actions on users with equal or higher roles than themselves or the bot.
+  - **Automated Logging:** Integrated `ModerationService` (`src/services/moderation.py`) to automatically log all moderation actions to the database with race-condition handling.
+  - **Audit Logs:** Added support for a dedicated mod-log channel for real-time reporting of moderation actions within servers.
+- **Caching & Performance:**
+  - **Guild Cache:** Introduced `GuildCache` (`src/services/cache.py`) to minimize database hits by caching guild configurations in-memory with a configurable Time-To-Live (TTL).
+- **Testing & Quality Assurance:**
+  - **Expanded Test Suite:** Added comprehensive loading tests (`test/loading/`) for all cogs, services, configurations, and utilities.
+  - **Unit Testing:** Implemented unit tests for database connection stability (`test/unit/database/`) and embed consistency (`test/unit/utils/`).
+
 ## [0.1.0] - 2026-01-29
 
 ### Added

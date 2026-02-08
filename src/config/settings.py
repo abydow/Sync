@@ -1,37 +1,44 @@
-import os
 from pathlib import Path
+from typing import List
 
-from dotenv import load_dotenv
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-
-class Settings:
+class Settings(BaseSettings):
     # Base Paths
-    BASE_DIR = Path(__file__).parent.parent.parent
-    LOG_DIR = BASE_DIR / "logs"
+    BASE_DIR: Path = Path(__file__).parent.parent.parent
+    LOG_DIR: Path = BASE_DIR / "logs"
 
     # Bot Configuration
-    DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-    PREFIX = os.getenv("COMMAND_PREFIX", "!")
-    OWNER_IDS = [int(id) for id in os.getenv("OWNER_IDS", "").split(",") if id.strip()]
+    DISCORD_TOKEN: str = Field(..., description="Discord Bot Token")
+    COMMAND_PREFIX: str = Field(default="!", max_length=5)
+    OWNER_IDS: List[int] = Field(default_factory=list)
 
     # Database
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./bot.db")
+    DATABASE_URL: str = Field(default="sqlite+aiosqlite:///./bot.db")
 
     # Links
-    SUPPORT_SERVER_URL = os.getenv("SUPPORT_SERVER_URL", "https://discord.gg/Y6dsH9kF")
-    GITHUB_REPO_URL = os.getenv("GITHUB_REPO_URL", "https://github.com/abydow/Sync")
+    SUPPORT_SERVER_URL: str = "https://discord.gg/Y6dsH9kF"
+    GITHUB_REPO_URL: str = "https://github.com/abydow/Sync"
 
     # Feature Flags / Defaults
-    DEFAULT_WELCOME_MESSAGE = "Welcome {member} to {server}!"
+    DEFAULT_WELCOME_MESSAGE: str = "Welcome {member} to {server}!"
 
-    @classmethod
-    def validate(cls):
-        """Validate critical configuration"""
-        if not cls.DISCORD_TOKEN:
-            raise ValueError("DISCORD_TOKEN not found in environment variables.")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+        case_sensitive=True
+    )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+    @property
+    def PREFIX(self) -> str:
+        return self.COMMAND_PREFIX
 
 
-# Create logs directory if it doesn't exist
-Settings.LOG_DIR.mkdir(parents=True, exist_ok=True)
+settings = Settings()

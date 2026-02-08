@@ -24,9 +24,12 @@ The core framework is in place, and we are now looking for contributors to help 
 ## ✨ Current Features
 
 *   **Bot Core:** Basic bot structure using `discord.py`.
-*   **Event Handling:** Logs when the bot is ready and when it joins a new guild.
-*   **Environment Configuration:** Loads configuration from a `.env` file for security.
-*   **Basic Logging:** Clean and informative logging for bot events.
+*   **Moderation System:** Comprehensive tools including `ban`, `kick`, `timeout`, and `unban` with hybrid command support.
+*   **Automated Logging:** Database-backed moderation case logging and real-time Discord mod-log channels.
+*   **Intelligent Caching:** In-memory guild configuration caching to optimize performance and reduce database load.
+*   **Event Handling:** Automated guild registration, welcome messages, and detailed event logging.
+*   **Environment Configuration:** Secure configuration management using Pydantic and `.env` files.
+*   **Comprehensive Testing:** Robust test suite covering cogs, services, and core utilities.
 
 ---
 
@@ -35,21 +38,21 @@ The core framework is in place, and we are now looking for contributors to help 
 This is where we are headed. Contributions in these areas are highly welcome!
 
 *   [ ] **Advanced Moderation:**
-    *   [ ] Warning system
-    *   [ ] Automated mute/kick/ban actions based on configurable rules
-    *   [ ] Audit logs channel
+    *   [ ] Warning system (persistent warnings in database)
+    *   [x] Automated mute/kick/ban actions based on configurable rules
+    *   [x] Audit logs channel
 *   [ ] **AI Integration:**
     *   [ ] Chatbot functionality using an LLM (e.g., OpenAI, Gemini)
     *   [ ] AI-powered content moderation (e.g., detecting spam or toxic messages)
 *   [ ] **Command Suite:**
     *   [ ] Utility commands (`!userinfo`, `!serverinfo`)
     *   [ ] Fun commands (`!meme`, `!quote`)
-*   [ ] **Database Integration:**
-    *   [ ] Store moderation history, user data, and server settings.
+*   [x] **Database Integration:**
+    *   [x] Store moderation history, user data, and server settings.
 *   [ ] **Web Dashboard (API):**
     *   [ ] An API and frontend for configuring the bot from a web interface.
-*   [ ] **Comprehensive Testing:**
-    *   [ ] Unit and integration tests for all major features.
+*   [x] **Comprehensive Testing:**
+    *   [x] Unit and integration tests for all major features.
 
 ---
 
@@ -95,7 +98,7 @@ To get a local copy up and running, follow these simple steps.
 
 5.  **Run the bot:**
     ```sh
-    python src/bot/main.py
+    python src/main.py
     ```
 
 ---
