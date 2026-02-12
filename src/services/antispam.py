@@ -1,10 +1,11 @@
+import logging
 from collections import defaultdict, deque
 from datetime import datetime
 from typing import Optional, Tuple
 
 import discord
 
-from config.settings import settings
+logger = logging.getLogger(__name__)
 
 
 class AntiSpamService:
