@@ -5,7 +5,6 @@
 [![Discord.py](https://img.shields.io/badge/discord.py-2.3-blue)](https://discordpy.readthedocs.io/)
 [![Python](https://img.shields.io/badge/Python-3.11+-green)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache--2.0-green)](LICENSE)
-[![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
 **A foundational, event-driven Discord bot designed for scalability and enterprise-level features.**
 
