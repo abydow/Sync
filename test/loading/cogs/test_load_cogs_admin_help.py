@@ -14,3 +14,5 @@ def test_load_cogs_admin_help():
         assert hasattr(module, 'setup'), "Cog must have a setup function"
     except ImportError as e:
         pytest.fail(f"Failed to import {module_name}: {e}")
+
+# test
