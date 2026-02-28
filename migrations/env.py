@@ -11,7 +11,8 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 # Add src to path so we can import config and models
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-import database.models  # Ensure models are loaded
+
+# Ensure models are loaded
 from config.settings import settings
 from database import Base
 
