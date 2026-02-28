@@ -37,4 +37,11 @@ class AutoModCog(commands.Cog):
 
         #!TODO:
         """Immunity Check"""
+        if self._is_immune(message.author):
+            return
         """Check for Spam"""
+        is_spam, reason = self.antispam.check_spam(message)
+
+        if is_spam:
+            await self._punish_spammer(message, reason)
+
