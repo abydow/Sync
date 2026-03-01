@@ -45,3 +45,22 @@ class AutoModCog(commands.Cog):
         if is_spam:
             await self._punish_spammer(message, reason)
 
+    async def _punish_spammer(self, message: discord.Message, reason: str):
+        """Punish the spammer based on the reason"""
+        member = message.author
+        guild = message.guild
+
+        logger.info(f"AutoMod detected spam from {member} in {guild}: {reason}")
+
+        # Timeout (10min)
+
+        try:
+            duration = timedelta(minutes=10)
+            await member.timeout(duration, reason=f"[AutoMod] {reason}")
+        except discord.Forbidden:
+            logger.warning(f"Failed to timeout {member} in {guild}")
+            return
+
+        # Delete recent messages (Cleanup)
+        try:
+            await
