@@ -4,7 +4,6 @@ from datetime import timedelta
 import discord
 from discord.ext import commands
 
-from config.settings import settings
 from services.antispam import AntiSpamService
 from services.moderation import ModerationService
 from utils.embeds import EmbedBuilder
@@ -25,13 +24,13 @@ class AutoModCog(commands.Cog):
             return True
         if (
             member.guild_permissions.administrator
-            or member.guild_permission.manage_messages
+            or member.guild_permissions.manage_messages
         ):
             return True
         return False
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self,message: discord.Message):
         if not message.guild or not isinstance(message.author, discord.Member):
             return
 
@@ -63,4 +62,44 @@ class AutoModCog(commands.Cog):
 
         # Delete recent messages (Cleanup)
         try:
-            await
+            await message.channel.purge(
+                limit=10,
+                check=lambda m: m.author == member,
+                reason = "[AutoMod] Spam Cleanup"
+            )
+        except (discord.Forbidden, discord.HTTPException):
+            pass
+
+        # Notification
+        try:
+            embed = EmbedBuilder.error(
+                None,
+                title="Spam Detected",
+                description=f"You have been timed out for 10 minutes .\n **Reason**: {reason}"
+                )
+            await member.send(embed=embed)
+        except discord.Forbidden:
+            pass
+
+        # Log to Database
+        async with self.bot.db_session() as session:
+            mod_service = ModerationService(session)
+            # Bot will be the mod
+            await mod_service.log_case(
+                guild_id=guild.id,
+                user_id=member.id,
+                moderator_id=self.bot.user.id,
+                action="Timeout",
+                reason=f"[AutoMod] {reason}",
+                duration=600
+            )
+
+        # Mod Log
+
+        # reset
+        self.antispam.clear_user_history(member.id)
+
+async def setup(bot):
+    await bot.add_cog(AutoModCog(bot))
+
+
