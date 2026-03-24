@@ -5,7 +5,6 @@
 [![Discord.py](https://img.shields.io/badge/discord.py-2.3-blue)](https://discordpy.readthedocs.io/)
 [![Python](https://img.shields.io/badge/Python-3.11+-green)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache--2.0-green)](LICENSE)
-[![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
 **A foundational, event-driven Discord bot designed for scalability and enterprise-level features.**
 
@@ -15,9 +14,7 @@
 
 ## 📖 About The Project
 
-This project aims to be a production-ready Discord bot equipped with advanced moderation, AI integration, and other enterprise-grade functionalities. Currently, the bot is in its foundational stage, featuring a robust, event-driven architecture that is ready for expansion.
-
-The core framework is in place, and we are now looking for contributors to help us build out the exciting features we have planned.
+This project aims to be a production-ready Discord bot equipped with advanced moderation.The core framework is in place.
 
 ---
 
@@ -37,20 +34,15 @@ The core framework is in place, and we are now looking for contributors to help 
 
 This is where we are headed. Contributions in these areas are highly welcome!
 
-*   [ ] **Advanced Moderation:**
-    *   [ ] Warning system (persistent warnings in database)
+*   [x] **Advanced Moderation:**
+    *   [x] Warning system (persistent warnings in database)
     *   [x] Automated mute/kick/ban actions based on configurable rules
     *   [x] Audit logs channel
-*   [ ] **AI Integration:**
-    *   [ ] Chatbot functionality using an LLM (e.g., OpenAI, Gemini)
-    *   [ ] AI-powered content moderation (e.g., detecting spam or toxic messages)
-*   [ ] **Command Suite:**
-    *   [ ] Utility commands (`!userinfo`, `!serverinfo`)
-    *   [ ] Fun commands (`!meme`, `!quote`)
+*   [x] **Command Suite:**
+    *   [x] Utility commands (`!userinfo`, `!serverinfo`)
+    *   [x] Fun commands (`!meme`, `!quote`)
 *   [x] **Database Integration:**
     *   [x] Store moderation history, user data, and server settings.
-*   [ ] **Web Dashboard (API):**
-    *   [ ] An API and frontend for configuring the bot from a web interface.
 *   [x] **Comprehensive Testing:**
     *   [x] Unit and integration tests for all major features.
 
@@ -102,15 +94,3 @@ To get a local copy up and running, follow these simple steps.
     ```
 
 ---
-
-## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-Please see our [**Contributing Guidelines**](CONTRIBUTING.md) for more details on how to get started.
-
----
-
-## 📝 License
-
-Distributed under the Apache 2.0 License. See `LICENSE` for more information.
